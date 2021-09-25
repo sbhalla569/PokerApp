@@ -1,0 +1,2 @@
+rootProject.name = "comp3003_pokerapp_psysb7"
+include ':app'
