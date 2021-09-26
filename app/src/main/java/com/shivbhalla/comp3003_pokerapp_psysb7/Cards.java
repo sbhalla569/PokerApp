@@ -1,4 +1,4 @@
-package com.shivbhalla.comp3003_pokerapp_psysb7.;
+package com.shivbhalla.comp3003_pokerapp_psysb7;
 
 // class to handle card values, for utility purposes
 public final class Cards {
