@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
+import com.google.android.material.tabs.TabLayout;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
 
 /**
@@ -44,6 +46,7 @@ public class SinglePlayerGame extends AppCompatActivity {
     private Deck deck;
     private int state = 0; // 0 = pre flop; 1 = flop; 2 = river; 3 = show cards
     private boolean moveForward = false;
+    private Button callButton;
 
     // Main update loop of game
     private final Runnable mMainLoop = new Runnable() {
@@ -85,6 +88,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
+                        tableCards.reset();
                         players[0].showHand();
                         break;
 
@@ -171,6 +175,11 @@ public class SinglePlayerGame extends AppCompatActivity {
         players[3] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_4);
 
         pot = (Chips) getSupportFragmentManager().findFragmentById(R.id.pot);
+        tableCards = (TableCards) getSupportFragmentManager().findFragmentById(R.id.table_cards);
+        callButton = findViewById(R.id.call_button);
+        callButton.setOnClickListener(View -> {
+            moveForward = true;
+        });
 
         deck = new Deck();
         mainHandler.postDelayed(new Runnable() {
@@ -194,6 +203,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                 players[0].showHand();
                 assert pot != null;
                 pot.setChipValue(300);
+                mainHandler.postDelayed(mMainLoop, 100);
             }
         }, 200);
     }
