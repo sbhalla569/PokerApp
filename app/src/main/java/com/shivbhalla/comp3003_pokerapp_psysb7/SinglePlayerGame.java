@@ -20,6 +20,7 @@ public class SinglePlayerGame extends AppCompatActivity {
 
     private playerFragment[] players;
     private Chips pot;
+    private TableCards tableCards;
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -41,6 +42,57 @@ public class SinglePlayerGame extends AppCompatActivity {
     private final Handler mainHandler = new Handler();
     private View mContentView;
     private Deck deck;
+    private int state = 0; // 0 = pre flop; 1 = flop; 2 = river; 3 = show cards
+    private boolean moveForward = false;
+
+    // Main update loop of game
+    private final Runnable mMainLoop = new Runnable() {
+        @Override
+        public void run() {
+            if (moveForward){
+                moveForward = false;
+                switch (state){
+                    case 0:
+                        state = 1;
+                        try {
+                            tableCards.showRiver(deck.drawRiver());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 1:
+                        state = 2;
+                        try {
+                            tableCards.showFlop(deck.drawCard());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 2:
+                        state = 3;
+                        for (playerFragment player : players){
+                            player.showHand();
+                        }
+                        // Determine best hand
+                        break;
+                    case 3:
+                        state = 0;
+                        deck.shuffle();
+                        for (playerFragment player : players){
+                            try {
+                                player.setCards(deck.drawCard(),deck.drawCard());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        players[0].showHand();
+                        break;
+
+                }
+            }
+            mainHandler.postDelayed(mMainLoop, 100);
+        }
+    };
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -133,8 +185,13 @@ public class SinglePlayerGame extends AppCompatActivity {
 //                    }
 //                    player.showHand();
                     player.setChipValue(700);
-
+                    try {
+                        player.setCards(deck.drawCard(),deck.drawCard());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+                players[0].showHand();
                 assert pot != null;
                 pot.setChipValue(300);
             }

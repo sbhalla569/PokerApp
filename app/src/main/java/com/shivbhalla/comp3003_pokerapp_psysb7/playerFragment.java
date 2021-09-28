@@ -68,6 +68,8 @@ public class playerFragment extends Fragment {
     public void setCards(int left, int right) {
         leftCardValue = left;
         rightCardValue = right;
+        leftCard.setImageResource(R.drawable._006_provision_playing_cards_0006_back_design_large);
+        rightCard.setImageResource(R.drawable._006_provision_playing_cards_0006_back_design_large);
     }
 
     // Changes upside down cards to face up with the correct imageview

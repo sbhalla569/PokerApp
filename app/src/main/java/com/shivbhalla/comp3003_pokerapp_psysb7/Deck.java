@@ -44,7 +44,7 @@ public class Deck {
     }
 
     // draws a card for the flop
-    public int [] drawFlop() throws Exception{
+    public int [] drawRiver() throws Exception{
         int [] flop = new int[3];
         flop[0] = drawCard();
         flop[1] = drawCard();

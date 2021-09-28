@@ -44,6 +44,14 @@ public class TableCards extends Fragment {
         flopValue = flopCard;
     }
 
+    // Sets cards facing back
+    public void reset(){
+        river1.setImageResource(R.drawable._006_provision_playing_cards_0006_back_design_large);
+        river2.setImageResource(R.drawable._006_provision_playing_cards_0006_back_design_large);
+        river3.setImageResource(R.drawable._006_provision_playing_cards_0006_back_design_large);
+        flop.setImageResource(R.drawable._006_provision_playing_cards_0006_back_design_large);
+    }
+
     public int getBestHand(int leftCard, int rightCard){
         return 0;
     }
