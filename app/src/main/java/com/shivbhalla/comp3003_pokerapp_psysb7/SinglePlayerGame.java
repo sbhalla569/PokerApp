@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.shivbhalla.pokergame.databinding.ActivitySinglerPlayerGameBinding;
+import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

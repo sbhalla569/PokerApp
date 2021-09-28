@@ -10,7 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.shivbhalla.pokergame.databinding.ActivityMainBinding;
+import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
