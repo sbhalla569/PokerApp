@@ -52,8 +52,61 @@ public class TableCards extends Fragment {
         flop.setImageResource(R.drawable._006_provision_playing_cards_0006_back_design_large);
     }
 
-    public int getBestHand(int leftCard, int rightCard){
-        return 0;
+    public int[] getBestHand(int leftCard, int rightCard){
+        int[] value = {0,0};
+        // Value[0] = High Card
+        int card1 = Cards.cardValue(leftCard);
+        int card2 = Cards.cardValue(rightCard);
+        value[1] = Math.max(card1,card2);
+
+        // Value[1] = Pair
+        int test = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value});
+        if(test >= 0){
+            int test2 = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value}, test);
+            // Value[2] = Two Pair
+            value[0] = test2 >= 0? 2 : 1;
+            value[1] = test;
+        }
+
+        // Value[3] = Three of a kind
+
+        // Value[4] = Straight
+
+        // Value[5] = Flush
+
+        // Value[6] = Full House
+
+        // Value[7] = Four of a Kind
+
+        // Value[8] = Straight Flush
+
+        // Value[9] = Royal Flush
+        return value;
+    }
+
+    // Default values
+    public int getBestPair(int[] cards){
+        return getBestPair(cards,-1);
+    }
+
+    // Function to find the best Pair
+    public int getBestPair(int[] cards, int ignore){
+        int value = -1;
+        for(int i = 0; i < cards.length - 1; i++){
+            int card1 = Cards.cardValue(cards[i]);
+            if(card1<=value || card1 == ignore){
+                continue;
+            }
+            // Finding highest card value for pair
+            for(int j=i+1; j < cards.length; j++){
+                int card2 = Cards.cardValue(cards[j]);
+                if(card1 == card2){
+                    value = card1;
+                    break;
+                }
+            }
+        }
+        return value;
     }
 
     @Override
