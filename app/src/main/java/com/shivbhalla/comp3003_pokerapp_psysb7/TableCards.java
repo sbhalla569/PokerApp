@@ -55,23 +55,37 @@ public class TableCards extends Fragment {
         flop.setImageResource(R.drawable.card_back);
     }
 
-    public int[] getBestHand(int leftCard, int rightCard){
+    public int[] getBestHand(int[] cards){
         int[] value = {0,0,0};
-        // Value[0] = High Card
-        int card1 = Cards.cardValue(leftCard);
-        int card2 = Cards.cardValue(rightCard);
-        value[1] = Math.max(card1,card2);
+
+        int[] result = getBestThreeOrBetter(new int[]{cards[0],cards[1],river1Value,river2Value,river3Value,flopValue});
+        if(result[0] > 0){
+            value[0] = result[0];
+            value[1] = result[1];
+            return value;
+        }
 
         // Value[1] = Pair
-        int test = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value,flopValue});
+        int test = getBestPair(new int[]{cards[0],cards[1],river1Value,river2Value,river3Value,flopValue});
         if(test >= 0){
-            int test2 = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value,flopValue}, test);
+            int test2 = getBestPair(new int[]{cards[0],cards[1],river1Value,river2Value,river3Value,flopValue}, test);
             // Value[2] = Two Pair
             value[0] = test2 >= 0? 2 : 1;
             value[1] = test;
             value[2] = test2;
+            if(value[1] == 0){
+                value[1] = 13;
+            }
+            return value;
         }
+        // Value[0] = High Card
+        int card1 = Cards.cardValue(cards[0]);
+        int card2 = Cards.cardValue(cards[1]);
+        value[1] = Math.max(card1,card2);
 
+        if(card1 == 0 || card2 == 0){
+            value[1] = 13;
+        }
         // Value[3] = Three of a kind
 
         // Value[4] = Straight
@@ -128,24 +142,24 @@ public class TableCards extends Fragment {
                 handType = value[i];
             }
         }
-        switch (handType) {
+        switch (handType){
             // Four of a kind
             case 4:
-                return new int[]{7, highCard};
+                return new int[]{7,highCard};
             case 3:
-                int pair = getBestPair(cards, highCard);
-                if (pair > 0) {
+                int pair = getBestPair(cards,highCard);
+                if(pair > 0){
                     // Full house
-                    return new int[]{6, highCard};
+                    return new int[] {6,highCard};
                 }
                 // Three of a kind
-                return new int[]{3, highCard};
+                return new int[] {3,highCard};
 
             case 1:
                 // Flush
                 boolean flush = false;
-                for (int i = 0; i < 4; i++) {
-                    if (suit[i] > 4) {
+                for(int i = 0; i<4; i++){
+                    if(suit[i] > 4){
                         flush = true;
                         break;
                     }
@@ -153,20 +167,36 @@ public class TableCards extends Fragment {
                 // Straight
                 boolean straight = false;
                 int start = 0;
-                for (int i = 0; i < 10; i++) {
-                    if (value[i] < 1) {
+                for(int i = 0; i<10;i++){
+                    if(value[i] < 1){
                         int test = 0;
-                        for (int j = 0; j < 5; j++) {
-                            test += value[(i + j) % 13];
+                        for(int j = 0; j<5; j++){
+                            test += value[(i + j)%13];
                         }
-                        if (test == 5) {
+                        if(test == 5){
                             straight = true;
                             start = i;
                             break;
                         }
                     }
                 }
+
+                // Straight Flush
+                if(flush){
+                    if(straight){
+                        if(start == 9){
+                            // Royal Flush
+                            return new int[]{9,start};
+                        }
+                        return new int[]{8,start};
+                    }
+                    return new int[]{5,highCard};
+                }
+                if(straight){
+                    return new int[]{4,start};
+                }
         }
+        return new int[]{-1};
     }
 
     @Override
