@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 
 public class TableCards extends Fragment {
 
@@ -53,19 +56,20 @@ public class TableCards extends Fragment {
     }
 
     public int[] getBestHand(int leftCard, int rightCard){
-        int[] value = {0,0};
+        int[] value = {0,0,0};
         // Value[0] = High Card
         int card1 = Cards.cardValue(leftCard);
         int card2 = Cards.cardValue(rightCard);
         value[1] = Math.max(card1,card2);
 
         // Value[1] = Pair
-        int test = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value});
+        int test = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value,flopValue});
         if(test >= 0){
-            int test2 = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value}, test);
+            int test2 = getBestPair(new int[]{leftCard,rightCard,river1Value,river2Value,river3Value,flopValue}, test);
             // Value[2] = Two Pair
             value[0] = test2 >= 0? 2 : 1;
             value[1] = test;
+            value[2] = test2;
         }
 
         // Value[3] = Three of a kind

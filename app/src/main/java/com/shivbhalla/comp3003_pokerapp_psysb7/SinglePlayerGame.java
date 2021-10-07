@@ -73,7 +73,8 @@ public class SinglePlayerGame extends AppCompatActivity {
                         break;
                     case 2:
                         state = 3;
-                        for (playerFragment player : players){
+                        for (int i = 0; i <players.length; i++){
+                            playerFragment player = players[i];
                             player.showHand();
                         }
                         // Determine best hand
