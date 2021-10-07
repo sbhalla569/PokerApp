@@ -113,6 +113,28 @@ public class TableCards extends Fragment {
         return value;
     }
 
+    public int[] getBestThreeOrBetter(int[] cards){
+        int[] value = new int[13];
+        int[] suit = new int[4];
+        for(int i = 0; i < cards.length; i++){
+            value[Cards.cardValue(cards[i])]++;
+            suit[Cards.cardSuit(cards[i])]++;
+        }
+        int highCard = 0;
+        int handType = 0;
+        for(int i=0; i < 13; i++){
+            if(value[i] > handType){
+                highCard = i;
+                handType = value[i];
+            }
+        }
+        switch (handType){
+            // Four of a kind
+            case 4:
+                return new int[]{7,highCard};
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
