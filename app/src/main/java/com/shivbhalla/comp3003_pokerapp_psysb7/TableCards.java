@@ -128,18 +128,44 @@ public class TableCards extends Fragment {
                 handType = value[i];
             }
         }
-        switch (handType){
+        switch (handType) {
             // Four of a kind
             case 4:
-                return new int[]{7,highCard};
+                return new int[]{7, highCard};
             case 3:
-                int pair = getBestPair(cards,highCard);
-                if(pair > 0){
+                int pair = getBestPair(cards, highCard);
+                if (pair > 0) {
                     // Full house
-                    return new int[] {6,highCard};
+                    return new int[]{6, highCard};
                 }
                 // Three of a kind
-                return new int[] {3,highCard};
+                return new int[]{3, highCard};
+
+            case 1:
+                // Flush
+                boolean flush = false;
+                for (int i = 0; i < 4; i++) {
+                    if (suit[i] > 4) {
+                        flush = true;
+                        break;
+                    }
+                }
+                // Straight
+                boolean straight = false;
+                int start = 0;
+                for (int i = 0; i < 10; i++) {
+                    if (value[i] < 1) {
+                        int test = 0;
+                        for (int j = 0; j < 5; j++) {
+                            test += value[(i + j) % 13];
+                        }
+                        if (test == 5) {
+                            straight = true;
+                            start = i;
+                            break;
+                        }
+                    }
+                }
         }
     }
 
