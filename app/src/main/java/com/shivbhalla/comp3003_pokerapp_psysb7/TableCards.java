@@ -138,6 +138,8 @@ public class TableCards extends Fragment {
                     // Full house
                     return new int[] {6,highCard};
                 }
+                // Three of a kind
+                return new int[] {3,highCard};
         }
     }
 
