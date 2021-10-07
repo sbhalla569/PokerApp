@@ -132,6 +132,12 @@ public class TableCards extends Fragment {
             // Four of a kind
             case 4:
                 return new int[]{7,highCard};
+            case 3:
+                int pair = getBestPair(cards,highCard);
+                if(pair > 0){
+                    // Full house
+                    return new int[] {6,highCard};
+                }
         }
     }
 
