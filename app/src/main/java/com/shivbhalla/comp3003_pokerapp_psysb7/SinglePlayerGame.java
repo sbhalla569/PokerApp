@@ -70,14 +70,34 @@ public class SinglePlayerGame extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        // DEBUG
+                        for(playerFragment player : players){
+                            player.showHand();
+                        }
                         break;
                     case 2:
                         state = 3;
+                        // Determine best hand
+                        int[] value;
+                        int bestHand = 0;
+                        int bestCard = 0;
+                        int bestPlayer = 0;
                         for (int i = 0; i <players.length; i++){
                             playerFragment player = players[i];
                             player.showHand();
+                            value = tableCards.getBestHand(player.getCards());
+                            if(value[0] >= bestHand){
+                                // NEED TO DOUBLE CHECK DRAWS
+                                if(value[0] > bestHand || value[1] > bestCard){
+                                    bestPlayer = i;
+                                    bestHand = value[0];
+                                    bestCard = value[1];
+                                }
+                            }
                         }
-                        // Determine best hand
+                        // Giving winning player chips
+                        players[bestPlayer].addChips(pot.getChipValue());
+                        pot.setChipValue(0);
                         break;
                     case 3:
                         state = 0;
