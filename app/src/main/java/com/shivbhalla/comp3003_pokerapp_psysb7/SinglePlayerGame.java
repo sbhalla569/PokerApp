@@ -97,7 +97,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                         }
                         // Giving winning player chips
                         players[bestPlayer].addChips(pot.getChipValue());
-                        pot.setChipValue(0);
+                        pot.setChipValue(300);
                         break;
                     case 3:
                         state = 0;
