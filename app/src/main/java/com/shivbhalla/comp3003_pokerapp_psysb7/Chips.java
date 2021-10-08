@@ -65,6 +65,11 @@ public class Chips extends Fragment {
         setChipValue(-1);
     }
 
+    //Function to get chip value
+    public int getChipValue(){
+        return chipValue;
+    }
+
     // Sets chips visible depending on what number is inputted
     public void setChipValue(int newChipValue){
         if(newChipValue >= 0){

@@ -1,12 +1,9 @@
 package com.shivbhalla.comp3003_pokerapp_psysb7;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -17,11 +14,17 @@ import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    // sends and processes message and runnable objects
+//    private static final Handler mainLoop = new Handler();
+
+//    private Deck deck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +33,37 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        Button playSingle = findViewById(R.id.single_player_button);
+        playSingle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),SinglePlayerGame.class);
+                startActivity(intent);
             }
         });
+
+//        deck = new Deck();
+//        // Binds Chips to the chip holder on both fragments
+//        playerFragment player = new playerFragment(150);
+//        getSupportFragmentManager().beginTransaction().add(R.id.chipHolder, player, "player").disallowAddToBackStack().commit();
+//        mainLoop.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    int[] hand = deck.drawHand();
+//                    player.setCards(hand[0],hand[1]);
+//                    // player.showHand();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, 200);
+
+
     }
 
     @Override

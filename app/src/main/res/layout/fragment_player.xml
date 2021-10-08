@@ -12,13 +12,13 @@
         android:id="@+id/leftCard"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/_006_provision_playing_cards_0006_back_design_large" />
+        android:src="@drawable/card_back" />
 
     <ImageView
         android:id="@+id/rightCard"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/_006_provision_playing_cards_0006_back_design_large"
+        android:src="@drawable/card_back"
         android:translationX="30dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shivbhalla.pokergame">
+    package="com.shivbhalla.comp3003_pokerapp_psysb7">
 
     <application
         android:allowBackup="true"
@@ -8,17 +8,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PokerGame">
+        android:theme="@style/Theme.comp3003_pokerapp_psysb7">
         <activity
             android:name=".SinglePlayerGame"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_singler_player_game"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.PokerGame.Fullscreen"></activity>
+            android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.PokerGame.NoActionBar">
+            android:theme="@style/Theme.comp3003_pokerapp_psysb7.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
