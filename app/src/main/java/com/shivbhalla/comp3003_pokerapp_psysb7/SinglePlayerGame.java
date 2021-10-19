@@ -48,6 +48,7 @@ public class SinglePlayerGame extends AppCompatActivity {
     private boolean moveForward = false;
     private Button callButton;
     private Button foldButton;
+    private Button raiseButton;
     //Counts how many times looped
     private int runCounter = 0;
 
@@ -215,6 +216,14 @@ public class SinglePlayerGame extends AppCompatActivity {
         tableCards = (TableCards) getSupportFragmentManager().findFragmentById(R.id.table_cards);
         callButton = findViewById(R.id.call_button);
         foldButton = findViewById(R.id.fold_button);
+        raiseButton = findViewById(R.id.raise_button);
+
+        raiseButton.setOnClickListener(View -> {
+            if(players[0].getChipValue() >= 50){
+                players[0].setChipValue(players[0].getChipValue() - 50);
+                pot.addChips(50);
+            }
+        });
 
         foldButton.setOnClickListener(View -> {
             players[0].fold();

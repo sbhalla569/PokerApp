@@ -116,6 +116,15 @@
             android:text="Fold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/call_button" />
+
+        <Button
+            android:id="@+id/raise_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="Raise"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/fold_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

@@ -64,6 +64,9 @@ public class playerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    public int getChipValue(){
+        return chipValue;
+    }
 
     public void fold(){
         hasFolded = true;
