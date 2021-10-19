@@ -47,6 +47,9 @@ public class SinglePlayerGame extends AppCompatActivity {
     private int state = 0; // 0 = pre flop; 1 = flop; 2 = river; 3 = show cards
     private boolean moveForward = false;
     private Button callButton;
+    private Button foldButton;
+
+
 
     // Main update loop of game
     private final Runnable mMainLoop = new Runnable() {
@@ -198,6 +201,11 @@ public class SinglePlayerGame extends AppCompatActivity {
         pot = (Chips) getSupportFragmentManager().findFragmentById(R.id.pot);
         tableCards = (TableCards) getSupportFragmentManager().findFragmentById(R.id.table_cards);
         callButton = findViewById(R.id.call_button);
+        foldButton = findViewById(R.id.fold_button);
+
+        foldButton.setOnClickListener(View -> {
+            players[0].fold();
+        });
         callButton.setOnClickListener(View -> {
             moveForward = true;
         });

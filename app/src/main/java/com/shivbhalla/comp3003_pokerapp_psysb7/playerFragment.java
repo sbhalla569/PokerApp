@@ -30,6 +30,7 @@ public class playerFragment extends Fragment {
     private TextView text;
     private int chipValue;
     private boolean showCards = false;
+    private boolean hasFolded = false;
     private int leftCardValue;
     private int rightCardValue;
 
@@ -64,8 +65,19 @@ public class playerFragment extends Fragment {
     }
 
 
+    public void fold(){
+        hasFolded = true;
+        leftCard.setImageResource(R.drawable.card_back);
+        rightCard.setImageResource(R.drawable.card_back);
+    }
+
+    public boolean getFolded(){
+        return hasFolded;
+    }
+
     // Allows to set the cards and swap them from facing up and down
     public void setCards(int left, int right) {
+        hasFolded = false;
         leftCardValue = left;
         rightCardValue = right;
         // When cards are set the image is now set to the back
