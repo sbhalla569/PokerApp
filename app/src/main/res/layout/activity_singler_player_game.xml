@@ -125,6 +125,38 @@
             android:text="Raise"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/fold_button" />
+
+        <ImageView
+            android:id="@+id/dealer_0"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/chip_1000"
+            app:layout_constraintStart_toEndOf="@+id/player_1"
+            app:layout_constraintTop_toTopOf="@+id/player_1" />
+
+        <ImageView
+            android:id="@+id/dealer_1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/chip_1000"
+            app:layout_constraintStart_toEndOf="@+id/player_2"
+            app:layout_constraintTop_toTopOf="@+id/player_2" />
+
+        <ImageView
+            android:id="@+id/dealer_2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/chip_1000"
+            app:layout_constraintBottom_toBottomOf="@+id/player_3"
+            app:layout_constraintStart_toEndOf="@+id/player_3" />
+
+        <ImageView
+            android:id="@+id/dealer_3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/chip_1000"
+            app:layout_constraintEnd_toStartOf="@+id/player_4"
+            app:layout_constraintTop_toTopOf="@+id/player_4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

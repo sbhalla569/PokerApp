@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
@@ -49,8 +50,14 @@ public class SinglePlayerGame extends AppCompatActivity {
     private Button callButton;
     private Button foldButton;
     private Button raiseButton;
-    //Counts how many times looped
+    // Counts how many times looped
     private int runCounter = 0;
+    // Who is allowed to make actions
+    private int currentAction = 0;
+    private int currentDealer = 0;
+    private ImageView[] dealerChips;
+    // Keeps track of how much goes into the pot
+    private int[] playerPotValue = new int[4];
 
 
 
@@ -107,20 +114,24 @@ public class SinglePlayerGame extends AppCompatActivity {
                         }
                         // Giving winning player chips
                         players[bestPlayer].addChips(pot.getChipValue());
-                        pot.setChipValue(300);
+                        pot.setChipValue(0);
                         break;
                     case 3:
                         state = 0;
                         deck.shuffle();
-                        for (playerFragment player : players){
+                        for (int i = 0; i<4; i++){
                             try {
-                                player.setCards(deck.drawCard(),deck.drawCard());
+                                players[i].setCards(deck.drawCard(),deck.drawCard());
+                                // Resets pot value
+                                playerPotValue[i] = 0;
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                         tableCards.reset();
                         players[0].showHand();
+                        setCurrentDealer((currentDealer + 1) % players.length);
+                        addBlinds();
                         break;
 
                 }
@@ -135,6 +146,14 @@ public class SinglePlayerGame extends AppCompatActivity {
             mainHandler.postDelayed(mMainLoop, 100);
         }
     };
+
+    private void setCurrentDealer(int newDealer){
+        for(int i = 0; i<dealerChips.length; i++){
+            dealerChips[i].setVisibility(i == newDealer? View.VISIBLE:View.INVISIBLE);
+        }
+        currentDealer = newDealer;
+    }
+
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -205,12 +224,20 @@ public class SinglePlayerGame extends AppCompatActivity {
 
         mVisible = true;
 
-
+        for(int i = 0; i<4; i++){
+            playerPotValue[i] = 0;
+        }
         players = new playerFragment[4];
         players[0] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_1);
         players[1] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_2);
         players[2] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_3);
         players[3] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_4);
+
+        dealerChips = new ImageView[4];
+        dealerChips[0] = (ImageView) findViewById(R.id.dealer_0);
+        dealerChips[1] = (ImageView) findViewById(R.id.dealer_1);
+        dealerChips[2] = (ImageView) findViewById(R.id.dealer_2);
+        dealerChips[3] = (ImageView) findViewById(R.id.dealer_3);
 
         pot = (Chips) getSupportFragmentManager().findFragmentById(R.id.pot);
         tableCards = (TableCards) getSupportFragmentManager().findFragmentById(R.id.table_cards);
@@ -222,6 +249,7 @@ public class SinglePlayerGame extends AppCompatActivity {
             if(players[0].getChipValue() >= 50){
                 players[0].setChipValue(players[0].getChipValue() - 50);
                 pot.addChips(50);
+                playerPotValue[0] += 50;
             }
         });
 
@@ -254,11 +282,22 @@ public class SinglePlayerGame extends AppCompatActivity {
                     }
                 }
                 players[0].showHand();
+                setCurrentDealer(0);
                 assert pot != null;
-                pot.setChipValue(300);
+                addBlinds();
                 mainHandler.postDelayed(mMainLoop, 100);
             }
         }, 200);
+
+
+    }
+
+    public void addBlinds(){
+        int smallBlind = (currentDealer + 1) % players.length;
+        int bigBlind = (currentDealer + 2) % players.length;
+        players[smallBlind].removeChips(25);
+        players[bigBlind].removeChips(50);
+        pot.addChips(75);
     }
 
     @Override

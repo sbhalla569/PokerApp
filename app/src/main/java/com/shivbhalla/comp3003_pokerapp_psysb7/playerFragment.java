@@ -27,12 +27,14 @@ public class playerFragment extends Fragment {
     private ImageView[] yellowChips; // 100
     private ImageView[] blueChips; // 500
     private ImageView[] greenChips; // 1500
+    private ImageView dealerChip;
     private TextView text;
     private int chipValue;
     private boolean showCards = false;
     private boolean hasFolded = false;
     private int leftCardValue;
     private int rightCardValue;
+
 
     public playerFragment(int value) {
         chipValue = value;
@@ -143,7 +145,6 @@ public class playerFragment extends Fragment {
         text = (TextView) view.findViewById(R.id.chip_value2);
 
         setChipValue();
-
         return view;
     }
 

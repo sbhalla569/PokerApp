@@ -214,6 +214,7 @@
             app:layout_constraintBottom_toBottomOf="@id/blue_a"
             app:layout_constraintStart_toEndOf="@id/blue_a"
             app:layout_constraintWidth_percent="0.1667" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
