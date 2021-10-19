@@ -48,6 +48,8 @@ public class SinglePlayerGame extends AppCompatActivity {
     private boolean moveForward = false;
     private Button callButton;
     private Button foldButton;
+    //Counts how many times looped
+    private int runCounter = 0;
 
 
 
@@ -73,10 +75,10 @@ public class SinglePlayerGame extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        // DEBUG
-                        for(playerFragment player : players){
-                            player.showHand();
-                        }
+//                        // DEBUG
+//                        for(playerFragment player : players){
+//                            player.showHand();
+//                        }
                         break;
                     case 2:
                         state = 3;
@@ -87,6 +89,10 @@ public class SinglePlayerGame extends AppCompatActivity {
                         int bestPlayer = 0;
                         for (int i = 0; i <players.length; i++){
                             playerFragment player = players[i];
+                            // If player fold they are out of the game
+                            if(player.getFolded()){
+                                continue;
+                            }
                             player.showHand();
                             value = tableCards.getBestHand(player.getCards());
                             if(value[0] >= bestHand){
@@ -116,6 +122,13 @@ public class SinglePlayerGame extends AppCompatActivity {
                         players[0].showHand();
                         break;
 
+                }
+            }
+            if (players[0].getFolded()){
+                runCounter++;
+                if(runCounter > 50){
+                    runCounter = 0;
+                    moveForward = true;
                 }
             }
             mainHandler.postDelayed(mMainLoop, 100);
@@ -207,7 +220,9 @@ public class SinglePlayerGame extends AppCompatActivity {
             players[0].fold();
         });
         callButton.setOnClickListener(View -> {
-            moveForward = true;
+            if(!players[0].getFolded()){
+                moveForward = true;
+            }
         });
 
         deck = new Deck();
