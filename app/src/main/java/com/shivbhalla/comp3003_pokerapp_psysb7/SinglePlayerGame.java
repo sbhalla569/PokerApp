@@ -59,6 +59,8 @@ public class SinglePlayerGame extends AppCompatActivity {
     private ImageView[] dealerChips;
     // Keeps track of how much goes into the pot
     private int[] playerPotValue = new int[4];
+    // How much each player puts in at the current stage
+    private int[] roundPotValue = new int[4];
 
 
     private int getCurrentRaiseValue(){
@@ -76,19 +78,40 @@ public class SinglePlayerGame extends AppCompatActivity {
         @Override
         public void run() {
             if(playerActed){
+                boolean action = false;
                 int raiseValue = getCurrentRaiseValue();
                 for(int i = 1; i<players.length; i++){
                     if(players[i].getFolded()){
                         continue;
                     }
-                    boolean needCall = playerPotValue[i] < raiseValue;
-                    if(needCall){
+                    int callValue = raiseValue - playerPotValue[i];
+                    if(callValue > 0){
+                        double winChance = tableCards.getWinChance(players[i].getCards(), state == 0? 4 : 1);
+                        double playerLoss = roundPotValue[i] / 800.0;
+                        winChance -= playerLoss;
                         // Figure out if we need to fold
+                        if(winChance < 0.3){
+                            players[i].fold();
+                            continue;
+                        }
+                        action = true;
                         // Figure out if we need to raise
+                        if(winChance > 0.60){
+                            pot.addChips(callValue + 50);
+                            players[i].removeChips(callValue + 50);
+                            playerPotValue[i] += callValue + 50;
+                            roundPotValue[i] += callValue + 50;
+                            continue;
+                        }
                         // Otherwise call
-
+                        pot.addChips(callValue);
+                        players[i].removeChips(callValue);
+                        playerPotValue[i] += callValue;
+                        roundPotValue[i] += callValue;
                     }
                 }
+                playerActed = players[0].getFolded();
+                moveForward = !action;
             }
             if (moveForward){
                 moveForward = false;
@@ -100,6 +123,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        roundPotValue = new int[players.length];
                         break;
                     case 1:
                         state = 2;
@@ -112,6 +136,7 @@ public class SinglePlayerGame extends AppCompatActivity {
 //                        for(playerFragment player : players){
 //                            player.showHand();
 //                        }
+                        roundPotValue = new int[players.length];
                         break;
                     case 2:
                         state = 3;
@@ -161,14 +186,14 @@ public class SinglePlayerGame extends AppCompatActivity {
 
                 }
             }
-            if (players[0].getFolded()){
-                runCounter++;
-                if(runCounter > 50){
-                    runCounter = 0;
-                    moveForward = true;
-                }
-            }
-            mainHandler.postDelayed(mMainLoop, 100);
+//            if (players[0].getFolded()){
+//                runCounter++;
+//                if(runCounter > 50){
+//                    runCounter = 0;
+//                    moveForward = true;
+//                }
+//            }
+            mainHandler.postDelayed(mMainLoop, players[0].getFolded()? 1000:100);
         }
     };
 
@@ -271,19 +296,21 @@ public class SinglePlayerGame extends AppCompatActivity {
         raiseButton = findViewById(R.id.raise_button);
 
         raiseButton.setOnClickListener(View -> {
-            if(players[0].getChipValue() >= 50){
+            if(players[0].getChipValue() >= 50 && !players[0].getFolded() && !playerActed){
                 players[0].setChipValue(players[0].getChipValue() - 50);
                 pot.addChips(50);
                 playerPotValue[0] += 50;
+                playerActed = true;
             }
         });
 
         foldButton.setOnClickListener(View -> {
             players[0].fold();
+            playerActed = true;
         });
         callButton.setOnClickListener(View -> {
             if(!players[0].getFolded()){
-                moveForward = true;
+                playerActed = true;
             }
         });
 
@@ -324,6 +351,8 @@ public class SinglePlayerGame extends AppCompatActivity {
         players[bigBlind].removeChips(50);
         playerPotValue[smallBlind] += 25;
         playerPotValue[bigBlind] += 50;
+        roundPotValue[smallBlind] += 25;
+        roundPotValue[bigBlind] += 50;
         pot.addChips(75);
     }
 
