@@ -47,6 +47,7 @@ public class SinglePlayerGame extends AppCompatActivity {
     private Deck deck;
     private int state = 0; // 0 = pre flop; 1 = flop; 2 = river; 3 = show cards
     private boolean moveForward = false;
+    private boolean playerActed = false;
     private Button callButton;
     private Button foldButton;
     private Button raiseButton;
@@ -60,11 +61,35 @@ public class SinglePlayerGame extends AppCompatActivity {
     private int[] playerPotValue = new int[4];
 
 
+    private int getCurrentRaiseValue(){
+        int maxValue = 0;
+        for(int value : playerPotValue){
+            if(value > maxValue){
+                maxValue = value;
+            }
+        }
+        return maxValue;
+    }
 
     // Main update loop of game
     private final Runnable mMainLoop = new Runnable() {
         @Override
         public void run() {
+            if(playerActed){
+                int raiseValue = getCurrentRaiseValue();
+                for(int i = 1; i<players.length; i++){
+                    if(players[i].getFolded()){
+                        continue;
+                    }
+                    boolean needCall = playerPotValue[i] < raiseValue;
+                    if(needCall){
+                        // Figure out if we need to fold
+                        // Figure out if we need to raise
+                        // Otherwise call
+
+                    }
+                }
+            }
             if (moveForward){
                 moveForward = false;
                 switch (state){
@@ -297,6 +322,8 @@ public class SinglePlayerGame extends AppCompatActivity {
         int bigBlind = (currentDealer + 2) % players.length;
         players[smallBlind].removeChips(25);
         players[bigBlind].removeChips(50);
+        playerPotValue[smallBlind] += 25;
+        playerPotValue[bigBlind] += 50;
         pot.addChips(75);
     }
 
