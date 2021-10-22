@@ -30,6 +30,14 @@ public class TableCards extends Fragment {
         // Required empty public constructor
     }
 
+    public double getWinChance(int[] cards, int cardsLeft){
+        int[] hand = getBestHand(cards);
+        // 0.1923 = 1/5.2 for the card you need
+        // 96% chance of win at start
+        double winChance = (0.1923 * cardsLeft) + (hand[0]/9);
+        return winChance;
+    }
+
     public void showRiver(int[] riverCards) throws IllegalArgumentException{
         if(riverCards.length < 3){
             throw new IllegalArgumentException();
