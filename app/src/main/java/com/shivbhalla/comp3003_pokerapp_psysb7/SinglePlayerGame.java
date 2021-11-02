@@ -77,7 +77,15 @@ public class SinglePlayerGame extends AppCompatActivity {
     private final Runnable mMainLoop = new Runnable() {
         @Override
         public void run() {
-            if(playerActed){
+            int playersFolded = 0;
+            for(int i = 0; i<players.length; i++) {
+                if (players[i].getFolded()) {
+                    playersFolded++;
+                }
+            }
+            if(playersFolded > 2){
+                moveForward = true;
+            }else if(playerActed){
                 boolean action = false;
                 int raiseValue = getCurrentRaiseValue();
                 for(int i = 1; i<players.length; i++){
