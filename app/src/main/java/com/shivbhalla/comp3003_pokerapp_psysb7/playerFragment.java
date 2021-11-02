@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Random;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link playerFragment#newInstance} factory method to
@@ -34,14 +36,27 @@ public class playerFragment extends Fragment {
     private boolean hasFolded = false;
     private int leftCardValue;
     private int rightCardValue;
+    private float foldValue;
+    private float raiseValue;
 
 
     public playerFragment(int value) {
         chipValue = value;
+        Random rand = new Random();
+        foldValue = (rand.nextFloat() * 0.3f) + 0.1f;
+        raiseValue = (rand.nextFloat() * 0.3f) + 0.6f;
         // Required public constructor
     }
     public playerFragment (){
-        chipValue = 500;
+        this(500);
+    }
+
+    public float getFoldValue() {
+        return foldValue;
+    }
+
+    public float getRaiseValue() {
+        return raiseValue;
     }
 
     /**
@@ -74,6 +89,8 @@ public class playerFragment extends Fragment {
         hasFolded = true;
         leftCard.setImageResource(R.drawable.card_back);
         rightCard.setImageResource(R.drawable.card_back);
+        leftCard.setVisibility(View.INVISIBLE);
+        rightCard.setVisibility(View.INVISIBLE);
     }
 
     public boolean getFolded(){
@@ -88,6 +105,8 @@ public class playerFragment extends Fragment {
         // When cards are set the image is now set to the back
         leftCard.setImageResource(R.drawable.card_back);
         rightCard.setImageResource(R.drawable.card_back);
+        leftCard.setVisibility(View.VISIBLE);
+        rightCard.setVisibility(View.VISIBLE);
     }
 
     // Function to get cards

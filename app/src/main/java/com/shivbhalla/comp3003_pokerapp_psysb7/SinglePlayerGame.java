@@ -90,13 +90,13 @@ public class SinglePlayerGame extends AppCompatActivity {
                         double playerLoss = roundPotValue[i] / 800.0;
                         winChance -= playerLoss;
                         // Figure out if we need to fold
-                        if(winChance < 0.3){
+                        if(winChance < players[i].getFoldValue()){
                             players[i].fold();
                             continue;
                         }
                         action = true;
                         // Figure out if we need to raise
-                        if(winChance > 0.60){
+                        if(winChance > players[i].getRaiseValue()){
                             pot.addChips(callValue + 50);
                             players[i].removeChips(callValue + 50);
                             playerPotValue[i] += callValue + 50;
