@@ -89,7 +89,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                 boolean action = false;
                 int raiseValue = getCurrentRaiseValue();
                 for(int i = 1; i<players.length; i++){
-                    if(players[i].getFolded()){
+                    if(players[i].getFolded() || players[0].getChipValue() < 1){
                         continue;
                     }
                     int callValue = raiseValue - playerPotValue[i];
@@ -179,7 +179,11 @@ public class SinglePlayerGame extends AppCompatActivity {
                         deck.shuffle();
                         for (int i = 0; i<4; i++){
                             try {
-                                players[i].setCards(deck.drawCard(),deck.drawCard());
+                                if(players[i].getChipValue() > 0){
+                                    players[i].setCards(deck.drawCard(),deck.drawCard());
+                                }else{
+                                    players[i].fold();
+                                }
                                 // Resets pot value
                                 playerPotValue[i] = 0;
                             } catch (Exception e) {
@@ -201,7 +205,22 @@ public class SinglePlayerGame extends AppCompatActivity {
 //                    moveForward = true;
 //                }
 //            }
-            mainHandler.postDelayed(mMainLoop, players[0].getFolded()? 1000:100);
+
+            int playersOut = 0;
+            boolean playerWins = true;
+            for(int i = 0; i<players.length; i++) {
+                if (players[i].getChipValue() < 1) {
+                    playersOut++;
+                }
+            }
+            if(players[0].getChipValue() < 1){
+                playersOut = 3;
+                playerWins = false;
+            }
+            if(playersOut < 3){
+                mainHandler.postDelayed(mMainLoop, players[0].getFolded()? 1000:100);
+            }
+            //Display win or loss screen
         }
     };
 

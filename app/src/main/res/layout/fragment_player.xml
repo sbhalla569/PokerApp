@@ -215,6 +215,16 @@
             app:layout_constraintStart_toEndOf="@id/blue_a"
             app:layout_constraintWidth_percent="0.1667" />
 
+        <ImageView
+            android:id="@+id/green_b"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/chip_1000"
+            app:layout_constraintBottom_toBottomOf="@id/green_a"
+            app:layout_constraintStart_toEndOf="@id/blue_a"
+            app:layout_constraintWidth_percent="0.1667" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

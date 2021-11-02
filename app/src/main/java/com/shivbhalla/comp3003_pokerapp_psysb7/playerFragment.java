@@ -135,7 +135,7 @@ public class playerFragment extends Fragment {
         turquoiseChips = new ImageView[3];
         yellowChips = new ImageView[4];
         blueChips = new ImageView[2];
-        greenChips = new ImageView[1];
+        greenChips = new ImageView[2];
 
         redChips[0] = (ImageView) view.findViewById(R.id.red_a);
         redChips[1] = (ImageView) view.findViewById(R.id.red_b);
@@ -160,6 +160,7 @@ public class playerFragment extends Fragment {
         blueChips[1] = (ImageView) view.findViewById(R.id.blue_b);
 
         greenChips[0] = (ImageView) view.findViewById(R.id.green_a);
+        greenChips[1] = (ImageView) view.findViewById(R.id.green_b);
 
         text = (TextView) view.findViewById(R.id.chip_value2);
 
@@ -169,8 +170,10 @@ public class playerFragment extends Fragment {
 
     // Clears the chips
     public void clearChips(){
-        greenChips[0].setVisibility(View.INVISIBLE);
 
+        for(int i = 0; i<2; i++){
+            greenChips[i].setVisibility(View.INVISIBLE);
+        }
         for(int i = 0; i<2; i++){
             blueChips[i].setVisibility(View.INVISIBLE);
         }
@@ -208,11 +211,12 @@ public class playerFragment extends Fragment {
         int tempValue = chipValue;
         clearChips();
 
-        if (tempValue >= 1500){
-            greenChips[0].setVisibility(View.VISIBLE);
+        int chipID = 0;
+        while (tempValue >= 1500){
+            greenChips[chipID++].setVisibility(View.VISIBLE);
             tempValue -= 1500;
         }
-        int chipID = 0;
+        chipID = 0;
         while(tempValue >= 500){
             blueChips[chipID++].setVisibility(View.VISIBLE);
             tempValue -= 500;
