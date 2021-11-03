@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -61,6 +62,7 @@ public class SinglePlayerGame extends AppCompatActivity {
     private int[] playerPotValue = new int[4];
     // How much each player puts in at the current stage
     private int[] roundPotValue = new int[4];
+    private FrameLayout win;
 
 
     private int getCurrentRaiseValue(){
@@ -219,8 +221,21 @@ public class SinglePlayerGame extends AppCompatActivity {
             }
             if(playersOut < 3){
                 mainHandler.postDelayed(mMainLoop, players[0].getFolded()? 1000:100);
+                return;
             }
-            //Display win or loss screen
+            //Display win or loss screen, button which takes back to main page
+            raiseButton.setVisibility(View.GONE);
+            callButton.setVisibility(View.GONE);
+            foldButton.setVisibility(View.GONE);
+            if(playerWins){
+                win.setVisibility(View.VISIBLE);
+                mainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, 10000);
+            }
         }
     };
 
@@ -321,6 +336,7 @@ public class SinglePlayerGame extends AppCompatActivity {
         callButton = findViewById(R.id.call_button);
         foldButton = findViewById(R.id.fold_button);
         raiseButton = findViewById(R.id.raise_button);
+        win = findViewById(R.id.win_frame);
 
         raiseButton.setOnClickListener(View -> {
             if(players[0].getChipValue() >= 50 && !players[0].getFolded() && !playerActed){

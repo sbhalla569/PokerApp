@@ -159,4 +159,28 @@
             app:layout_constraintTop_toTopOf="@+id/player_4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <FrameLayout
+        android:id="@+id/win_frame"
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:background="@color/cardview_light_background"
+        android:translationX="150dp"
+        android:translationY="65dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="81dp"
+            android:layout_height="85dp"
+            android:translationX="160dp"
+            android:translationY="150dp"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="181dp"
+            android:text="YOU WIN!"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform" />
+    </FrameLayout>
+
 </FrameLayout>
