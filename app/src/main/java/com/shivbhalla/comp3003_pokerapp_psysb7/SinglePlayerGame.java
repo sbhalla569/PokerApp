@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.google.android.material.tabs.TabLayout;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
 
 /**
@@ -63,6 +62,7 @@ public class SinglePlayerGame extends AppCompatActivity {
     // How much each player puts in at the current stage
     private int[] roundPotValue = new int[4];
     private FrameLayout win;
+    private FrameLayout lose;
 
 
     private int getCurrentRaiseValue(){
@@ -229,13 +229,15 @@ public class SinglePlayerGame extends AppCompatActivity {
             foldButton.setVisibility(View.GONE);
             if(playerWins){
                 win.setVisibility(View.VISIBLE);
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                }, 10000);
+            }else {
+                lose.setVisibility(View.VISIBLE);
             }
+            mainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 10000);
         }
     };
 
@@ -337,6 +339,7 @@ public class SinglePlayerGame extends AppCompatActivity {
         foldButton = findViewById(R.id.fold_button);
         raiseButton = findViewById(R.id.raise_button);
         win = findViewById(R.id.win_frame);
+        lose = findViewById(R.id.lose_frame);
 
         raiseButton.setOnClickListener(View -> {
             if(players[0].getChipValue() >= 50 && !players[0].getFolded() && !playerActed){
