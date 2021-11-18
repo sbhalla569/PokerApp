@@ -194,7 +194,15 @@ public class SinglePlayerGame extends AppCompatActivity {
                         }
                         tableCards.reset();
                         players[0].showHand();
-                        setCurrentDealer((currentDealer + 1) % players.length);
+                        int endDeal = currentDealer;
+                        currentDealer = (currentDealer + 1) % players.length;
+                        while(currentDealer != endDeal){
+                            if(players[currentDealer].getChipValue() > 0){
+                                break;
+                            }
+                            currentDealer = (currentDealer + 1) % players.length;
+                        }
+                        setCurrentDealer(currentDealer);
                         addBlinds();
                         break;
 
