@@ -150,6 +150,19 @@ public class SinglePlayerGame extends AppCompatActivity {
                         break;
                     case 2:
                         state = 3;
+                        try {
+                            tableCards.showTurn(deck.drawCard());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//                        // DEBUG
+//                        for(playerFragment player : players){
+//                            player.showHand();
+//                        }
+                        roundPotValue = new int[players.length];
+                        break;
+                    case 3:
+                        state = 4;
                         // Determine best hand
                         int[] value;
                         int bestHand = 0;
@@ -176,7 +189,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                         players[bestPlayer].addChips(pot.getChipValue());
                         pot.setChipValue(0);
                         break;
-                    case 3:
+                    case 4:
                         state = 0;
                         deck.shuffle();
                         for (int i = 0; i<4; i++){

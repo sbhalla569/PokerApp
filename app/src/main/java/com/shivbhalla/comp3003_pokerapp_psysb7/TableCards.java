@@ -19,10 +19,12 @@ public class TableCards extends Fragment {
     private ImageView river2;
     private ImageView river3;
     private ImageView flop;
+    private ImageView turnCard;
     private int river1Value;
     private int river2Value;
     private int river3Value;
     private int flopValue;
+    private int turnValue;
 
 
 
@@ -55,12 +57,18 @@ public class TableCards extends Fragment {
         flopValue = flopCard;
     }
 
+    public void showTurn(int turn){
+        turnCard.setImageResource(Cards.getCard(turn));
+        turnValue = turn;
+    }
+
     // Sets cards to face back
     public void reset(){
         river1.setImageResource(R.drawable.card_back);
         river2.setImageResource(R.drawable.card_back);
         river3.setImageResource(R.drawable.card_back);
         flop.setImageResource(R.drawable.card_back);
+        turnCard.setImageResource(R.drawable.card_back);
     }
 
     public int[] getBestHand(int[] cards){
@@ -223,6 +231,7 @@ public class TableCards extends Fragment {
         river2 = view.findViewById(R.id.river_2);
         river3 = view.findViewById(R.id.river_3);
         flop = view.findViewById(R.id.flop);
+        turnCard = view.findViewById(R.id.final_river);
         return view;
     }
 }
