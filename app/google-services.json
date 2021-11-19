@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "406274983331",
+    "project_id": "pokerapp-7e9de",
+    "storage_bucket": "pokerapp-7e9de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406274983331:android:5ea3b13cc927d262cc0616",
+        "android_client_info": {
+          "package_name": "com.shivbhalla.comp3003_pokerapp_psysb7"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406274983331-nq8ifsnops4h3e5qn8ns8l6qn9edoraa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDC89nj9lXElovKgn-8F23jPLrStrl1EHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406274983331-nq8ifsnops4h3e5qn8ns8l6qn9edoraa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
