@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMainBinding;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FirebaseManager.getGameInfo(0, new GameInfo.IGameReceiver() {
+            @Override
+            public void receiveGame(GameInfo game) {
+                if(game == null){
+                    Log.e("Firebase", "Did not retrieve game");
+                    return;
+                }
+                Log.d("Firebase", String.format("game retrieved %d", game.getDealer()));
+            }
+        });
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

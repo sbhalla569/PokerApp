@@ -5,6 +5,9 @@ import java.util.TreeMap;
 
 // Retrieves info from database
 public class GameInfo {
+    public static interface IGameReceiver{
+        void receiveGame(GameInfo game);
+    }
     int dealer;
     int[] deck;
     int gameID;
