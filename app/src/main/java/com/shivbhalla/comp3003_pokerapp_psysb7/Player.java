@@ -4,13 +4,23 @@ public class Player {
     private int card1;
     private int card2;
     private int chipValue;
+    private int raiseValue;
     private boolean folded;
 
     public Player() {
         card1 = 0;
         card2 = 0;
         chipValue = 0;
+        raiseValue = 0;
         folded = false;
+    }
+
+    public int getRaiseValue() {
+        return raiseValue;
+    }
+
+    public void setRaiseValue(int raiseValue) {
+        this.raiseValue = raiseValue;
     }
 
     public int getCard1() {

@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
 
+import java.util.Objects;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -201,23 +203,48 @@ public class MultiPlayerGame extends AppCompatActivity {
         win = findViewById(R.id.win_frame);
         lose = findViewById(R.id.lose_frame);
 
+
+        // Raise sorted
         raiseButton.setOnClickListener(View -> {
+            if(playerActed){
+                return;
+            }
             if(players[thisPlayer].getChipValue() >= 50 && !players[thisPlayer].getFolded() && !playerActed){
                 players[thisPlayer].setChipValue(players[thisPlayer].getChipValue() - 50);
+                Objects.requireNonNull(info.getPlayers().get(thisPlayer)).setChipValue(players[thisPlayer].getChipValue());
                 pot.addChips(50);
+                info.setPot(pot.getChipValue());
                 playerPotValue[0] += 50;
+                info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+                FirebaseManager.setGameInfo(info);
                 playerActed = true;
+                mainHandler.postDelayed(mMainLoop, 1000);
             }
         });
 
+        // Folding sorted
         foldButton.setOnClickListener(View -> {
+            if(playerActed){
+                return;
+            }
             players[thisPlayer].fold();
-            info.players.
+            Objects.requireNonNull(info.getPlayers().get(thisPlayer)).setFolded(true);
+            info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+            FirebaseManager.setGameInfo(info);
             playerActed = true;
+            mainHandler.postDelayed(mMainLoop, 1000);
         });
+
+        // Calling sorted
         callButton.setOnClickListener(View -> {
+            if(playerActed){
+                return;
+            }
             if(!players[thisPlayer].getFolded()){
+                info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+                FirebaseManager.setGameInfo(info);
                 playerActed = true;
+                mainHandler.postDelayed(mMainLoop, 1000);
             }
         });
 

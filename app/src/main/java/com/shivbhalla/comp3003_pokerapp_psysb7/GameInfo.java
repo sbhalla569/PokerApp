@@ -13,8 +13,8 @@ public class GameInfo {
     int dealer;
     List<Integer> deck;
     int gameID;
-    Map<String,Map<String, Object>> players;
-    Map<String,Object> pot;
+    List<Player> players;
+    int pot;
     int stage;
     List<Integer> table;
     int currentPlayer;
@@ -25,8 +25,8 @@ public class GameInfo {
         stage = 0;
         deck = new ArrayList<>();
         table = new ArrayList<>();
-        players = new TreeMap<>();
-        pot = new TreeMap<>();
+        players = new ArrayList<>();
+        pot = 0;
         currentPlayer = 0;
     }
 
@@ -62,19 +62,19 @@ public class GameInfo {
         this.gameID = gameID;
     }
 
-    public Map<String, Map<String, Object>> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Map<String, Map<String, Object>> players) {
+    public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
-    public Map<String, Object> getPot() {
+    public int getPot() {
         return pot;
     }
 
-    public void setPot(Map<String, Object> pot) {
+    public void setPot(int pot) {
         this.pot = pot;
     }
 
