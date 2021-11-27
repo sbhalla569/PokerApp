@@ -1,5 +1,7 @@
 package com.shivbhalla.comp3003_pokerapp_psysb7;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -9,21 +11,31 @@ public class GameInfo {
         void receiveGame(GameInfo game);
     }
     int dealer;
-    int[] deck;
+    List<Integer> deck;
     int gameID;
     Map<String,Map<String, Object>> players;
     Map<String,Object> pot;
     int stage;
-    int[] table;
+    List<Integer> table;
+    int currentPlayer;
 
     public GameInfo(){
         dealer = 0;
         gameID = 0;
         stage = 0;
-        deck = new int[0];
-        table = new int[0];
+        deck = new ArrayList<>();
+        table = new ArrayList<>();
         players = new TreeMap<>();
         pot = new TreeMap<>();
+        currentPlayer = 0;
+    }
+
+    public int getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(int currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
     public int getDealer() {
@@ -34,11 +46,11 @@ public class GameInfo {
         this.dealer = dealer;
     }
 
-    public int[] getDeck() {
+    public List<Integer> getDeck() {
         return deck;
     }
 
-    public void setDeck(int[] deck) {
+    public void setDeck(List<Integer> deck) {
         this.deck = deck;
     }
 
@@ -74,11 +86,11 @@ public class GameInfo {
         this.stage = stage;
     }
 
-    public int[] getTable() {
+    public List<Integer> getTable() {
         return table;
     }
 
-    public void setTable(int[] table) {
+    public void setTable(List<Integer> table) {
         this.table = table;
     }
 }

@@ -62,8 +62,10 @@ public class MultiPlayerGame extends AppCompatActivity {
     private int[] roundPotValue = new int[4];
     private FrameLayout win;
     private FrameLayout lose;
-
-
+    private int gameID;
+    private int thisPlayer;
+    private GameInfo info;
+    
     private int getCurrentRaiseValue(){
         int maxValue = 0;
         for(int value : playerPotValue){
@@ -81,12 +83,21 @@ public class MultiPlayerGame extends AppCompatActivity {
             // Check if it is my action
             // Enable buttons
             // When and who is going to move state forward (dealer?)
-            mainHandler.postDelayed(new Runnable() {
+            FirebaseManager.getGameInfo(gameID, new GameInfo.IGameReceiver() {
                 @Override
-                public void run() {
-                    finish();
+                public void receiveGame(GameInfo game) {
+                    if(game != null){
+                        // TODO: validate game object
+                        if(game.currentPlayer == thisPlayer){
+                            // Perform player actions
+                            info = game;
+                            playerActed = false;
+                            return;
+                        }
+                        mainHandler.postDelayed(mMainLoop, 1000);
+                    }
                 }
-            }, 10000);
+            });
         }
     };
 
@@ -171,7 +182,7 @@ public class MultiPlayerGame extends AppCompatActivity {
             playerPotValue[i] = 0;
         }
         players = new playerFragment[4];
-        players[0] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_1);
+        players[thisPlayer] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_1);
         players[1] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_2);
         players[2] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_3);
         players[3] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_4);
@@ -191,8 +202,8 @@ public class MultiPlayerGame extends AppCompatActivity {
         lose = findViewById(R.id.lose_frame);
 
         raiseButton.setOnClickListener(View -> {
-            if(players[0].getChipValue() >= 50 && !players[0].getFolded() && !playerActed){
-                players[0].setChipValue(players[0].getChipValue() - 50);
+            if(players[thisPlayer].getChipValue() >= 50 && !players[thisPlayer].getFolded() && !playerActed){
+                players[thisPlayer].setChipValue(players[thisPlayer].getChipValue() - 50);
                 pot.addChips(50);
                 playerPotValue[0] += 50;
                 playerActed = true;
@@ -200,11 +211,12 @@ public class MultiPlayerGame extends AppCompatActivity {
         });
 
         foldButton.setOnClickListener(View -> {
-            players[0].fold();
+            players[thisPlayer].fold();
+            info.players.
             playerActed = true;
         });
         callButton.setOnClickListener(View -> {
-            if(!players[0].getFolded()){
+            if(!players[thisPlayer].getFolded()){
                 playerActed = true;
             }
         });
@@ -228,7 +240,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                players[0].showHand();
+                players[thisPlayer].showHand();
                 setCurrentDealer(0);
                 assert pot != null;
                 addBlinds();
