@@ -15,6 +15,14 @@ public class Player {
         folded = false;
     }
 
+    public Player(int chipValue) {
+        this.chipValue = chipValue;
+        card1 = 0;
+        card2 = 0;
+        raiseValue = 0;
+        folded = false;
+    }
+
     public int getRaiseValue() {
         return raiseValue;
     }

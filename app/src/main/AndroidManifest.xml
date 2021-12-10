@@ -16,6 +16,12 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen"></activity>
         <activity
+            android:name=".MultiPlayerGame"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="title_activity_mutli_player_game"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen"></activity>
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.comp3003_pokerapp_psysb7.NoActionBar">

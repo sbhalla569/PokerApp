@@ -17,7 +17,7 @@ public class FirebaseManager {
     public static void getGameInfo(int gameID, GameInfo.IGameReceiver onComplete){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("games").whereEqualTo("gameid", gameID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("games").whereEqualTo("gameID", gameID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 List<GameInfo> games = queryDocumentSnapshots.toObjects(GameInfo.class);
@@ -42,14 +42,16 @@ public class FirebaseManager {
     public static void setGameInfo(GameInfo info){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("games").whereEqualTo("gameid", info.gameID).get().addOnSuccessListener(
+        db.collection("games").whereEqualTo("gameID", info.gameID).get().addOnSuccessListener(
                 new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if(queryDocumentSnapshots.getDocuments().size() > 0){
                             db.collection("games").document(queryDocumentSnapshots.getDocuments().get(0).getId())
                             .set(info);
+                            return;
                         }
+                        db.collection("games").add(info);
                     }
                 }
         );

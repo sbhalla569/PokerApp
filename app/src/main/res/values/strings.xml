@@ -12,6 +12,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_singler_player_game">FullscreenActivity</string>
+    <string name="title_activity_mutli_player_game">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="table_description">poker table</string>
 </resources>

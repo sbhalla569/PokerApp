@@ -12,8 +12,11 @@ import android.widget.ImageView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMultiPlayerGameBinding;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -89,6 +92,13 @@ public class MultiPlayerGame extends AppCompatActivity {
                 @Override
                 public void receiveGame(GameInfo game) {
                     if(game != null){
+                        List<Player> playerList = game.getPlayers();
+                        for(int i=0; i<4; i++){
+                            players[i].setChipValue(0);
+                            if(i < playerList.size()){
+                                players[i].setChipValue(playerList.get(i).getChipValue());
+                            }
+                        }
                         // TODO: validate game object
                         if(game.currentPlayer == thisPlayer){
                             // Perform player actions
@@ -96,8 +106,8 @@ public class MultiPlayerGame extends AppCompatActivity {
                             playerActed = false;
                             return;
                         }
-                        mainHandler.postDelayed(mMainLoop, 1000);
                     }
+                    mainHandler.postDelayed(mMainLoop, 1000);
                 }
             });
         }
@@ -169,22 +179,48 @@ public class MultiPlayerGame extends AppCompatActivity {
             return false;
         }
     };
-    private ActivitySinglerPlayerGameBinding binding;
+    private ActivityMultiPlayerGameBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivitySinglerPlayerGameBinding.inflate(getLayoutInflater());
+        binding = ActivityMultiPlayerGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        gameID = getIntent().getIntExtra("gameID",-1);
+        FirebaseManager.getGameInfo(gameID, new GameInfo.IGameReceiver() {
+            @Override
+            public void receiveGame(GameInfo game) {
+                if(game == null){
+                    GameInfo gi = new GameInfo();
+                    gi.setGameID(gameID);
+                    gi.setPot(0);
+
+                    List<Player> players = new ArrayList<>();
+                    players.add(new Player(500));
+                    gi.setPlayers(players);
+                    FirebaseManager.setGameInfo(gi);
+                    thisPlayer = 0;
+                    return;
+                }
+                List<Player> players = game.getPlayers();
+                if(players.size() >= 4){
+                    finish();
+                }
+                thisPlayer = players.size();
+                players.add(new Player(500));
+                game.setPlayers(players);
+                FirebaseManager.setGameInfo(game);
+            }
+        });
         mVisible = true;
 
         for(int i = 0; i<4; i++){
             playerPotValue[i] = 0;
         }
         players = new playerFragment[4];
-        players[thisPlayer] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_1);
+        players[0] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_1);
         players[1] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_2);
         players[2] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_3);
         players[3] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_4);
@@ -252,25 +288,6 @@ public class MultiPlayerGame extends AppCompatActivity {
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                for(playerFragment player : players){
-//                    try {
-//                        int[] hand = deck.drawHand();
-//                        player.setCards(hand[0],hand[1]);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    player.showHand();
-                    player.setChipValue(700);
-                    try {
-                        player.setCards(deck.drawCard(),deck.drawCard());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                players[thisPlayer].showHand();
-                setCurrentDealer(0);
-                assert pot != null;
-                addBlinds();
                 mainHandler.postDelayed(mMainLoop, 100);
             }
         }, 200);

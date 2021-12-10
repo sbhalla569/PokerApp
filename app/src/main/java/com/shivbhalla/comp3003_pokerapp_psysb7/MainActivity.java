@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         Button playSingle = findViewById(R.id.single_player_button);
+        Button playMulti = findViewById(R.id.multi_player_button);
+        final EditText gameID = findViewById(R.id.game_id);
         playSingle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +60,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        playMulti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    int ID = Integer.parseInt(gameID.getText().toString());
+                    Intent intent = new Intent(getApplicationContext(), MultiPlayerGame.class);
+                    intent.putExtra("gameID", ID);
+                    startActivity(intent);
+                } catch (NumberFormatException e){
+                    System.out.println("ERROR");
+                }
+
+            }
+        });
+
+
+        // Create Lobby
+        // Create/Join Lobby Button
+
+        // Create Multiplayer Button
 
 //        deck = new Deck();
 //        // Binds Chips to the chip holder on both fragments

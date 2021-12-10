@@ -18,5 +18,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Play SinglePlayer" />
+
+        <Button
+            android:id="@+id/multi_player_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Play MultiPlayer" />
+
+        <EditText
+            android:id="@+id/game_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Multiplayer gameID"
+            android:inputType="number" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
