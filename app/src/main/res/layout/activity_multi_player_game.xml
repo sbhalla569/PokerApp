@@ -157,6 +157,42 @@
             android:src="@drawable/chip_1000"
             app:layout_constraintEnd_toStartOf="@+id/player_4"
             app:layout_constraintTop_toTopOf="@+id/player_4" />
+
+        <ImageView
+            android:id="@+id/player_marker_0"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/player_1"
+            app:layout_constraintTop_toTopOf="@+id/player_1" />
+
+        <ImageView
+            android:id="@+id/player_marker_1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/player_2"
+            app:layout_constraintStart_toEndOf="@+id/player_2" />
+
+        <ImageView
+            android:id="@+id/player_marker_2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/player_3"
+            app:layout_constraintEnd_toStartOf="@+id/player_3" />
+
+        <ImageView
+            android:id="@+id/player_marker_3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/player_4"
+            app:layout_constraintEnd_toStartOf="@+id/player_4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

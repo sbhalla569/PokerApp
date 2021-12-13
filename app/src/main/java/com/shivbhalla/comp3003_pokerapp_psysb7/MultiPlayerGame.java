@@ -13,11 +13,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMultiPlayerGameBinding;
-import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -104,6 +104,9 @@ public class MultiPlayerGame extends AppCompatActivity {
                             // Perform player actions
                             info = game;
                             playerActed = false;
+                            raiseButton.setVisibility(View.VISIBLE);
+                            callButton.setVisibility(View.VISIBLE);
+                            foldButton.setVisibility(View.VISIBLE);
                             return;
                         }
                     }
@@ -188,6 +191,12 @@ public class MultiPlayerGame extends AppCompatActivity {
         binding = ActivityMultiPlayerGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        final ImageView[] playerMarkers = new ImageView[4];
+        playerMarkers[0] = findViewById(R.id.player_marker_0);
+        playerMarkers[1] = findViewById(R.id.player_marker_1);
+        playerMarkers[2] = findViewById(R.id.player_marker_2);
+        playerMarkers[3] = findViewById(R.id.player_marker_3);
+
         gameID = getIntent().getIntExtra("gameID",-1);
         FirebaseManager.getGameInfo(gameID, new GameInfo.IGameReceiver() {
             @Override
@@ -200,17 +209,26 @@ public class MultiPlayerGame extends AppCompatActivity {
                     List<Player> players = new ArrayList<>();
                     players.add(new Player(500));
                     gi.setPlayers(players);
+                    gi.setCurrentPlayer(-1);
                     FirebaseManager.setGameInfo(gi);
                     thisPlayer = 0;
+                    playerMarkers[0].setVisibility(View.VISIBLE);
                     return;
                 }
                 List<Player> players = game.getPlayers();
                 if(players.size() >= 4){
                     finish();
+                    return;
                 }
                 thisPlayer = players.size();
+                playerMarkers[thisPlayer].setVisibility(View.VISIBLE);
                 players.add(new Player(500));
                 game.setPlayers(players);
+                if(players.size() > 3){
+//                    Random rand = new Random();
+//                    game.setCurrentPlayer(rand.nextInt(4));
+                    game.setCurrentPlayer(3);
+                }
                 FirebaseManager.setGameInfo(game);
             }
         });
@@ -241,7 +259,7 @@ public class MultiPlayerGame extends AppCompatActivity {
 
 
         // Raise sorted
-        raiseButton.setOnClickListener(View -> {
+        raiseButton.setOnClickListener(V -> {
             if(playerActed){
                 return;
             }
@@ -254,12 +272,15 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
                 FirebaseManager.setGameInfo(info);
                 playerActed = true;
+                raiseButton.setVisibility(View.GONE);
+                callButton.setVisibility(View.GONE);
+                foldButton.setVisibility(View.GONE);
                 mainHandler.postDelayed(mMainLoop, 1000);
             }
         });
 
         // Folding sorted
-        foldButton.setOnClickListener(View -> {
+        foldButton.setOnClickListener(V -> {
             if(playerActed){
                 return;
             }
@@ -268,11 +289,14 @@ public class MultiPlayerGame extends AppCompatActivity {
             info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
             FirebaseManager.setGameInfo(info);
             playerActed = true;
+            raiseButton.setVisibility(View.GONE);
+            callButton.setVisibility(View.GONE);
+            foldButton.setVisibility(View.GONE);
             mainHandler.postDelayed(mMainLoop, 1000);
         });
 
         // Calling sorted
-        callButton.setOnClickListener(View -> {
+        callButton.setOnClickListener(V -> {
             if(playerActed){
                 return;
             }
@@ -280,9 +304,15 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
                 FirebaseManager.setGameInfo(info);
                 playerActed = true;
+                raiseButton.setVisibility(View.GONE);
+                callButton.setVisibility(View.GONE);
+                foldButton.setVisibility(View.GONE);
                 mainHandler.postDelayed(mMainLoop, 1000);
             }
         });
+        raiseButton.setVisibility(View.GONE);
+        callButton.setVisibility(View.GONE);
+        foldButton.setVisibility(View.GONE);
 
         deck = new Deck();
         mainHandler.postDelayed(new Runnable() {
