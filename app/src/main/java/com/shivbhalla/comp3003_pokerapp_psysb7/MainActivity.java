@@ -3,6 +3,7 @@ package com.shivbhalla.comp3003_pokerapp_psysb7;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.navigation.NavController;
@@ -10,6 +11,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMainBinding;
 
 import android.util.Log;
@@ -18,11 +26,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    GoogleSignInClient client;
+    SignInButton signInButton;
+    LinearLayout linearLayout;
     // sends and processes message and runnable objects
 //    private static final Handler mainLoop = new Handler();
 
@@ -50,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 //        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        linearLayout = findViewById(R.id.linearLayout);
+        signInButton = findViewById(R.id.google_login);
         Button playSingle = findViewById(R.id.single_player_button);
         Button playMulti = findViewById(R.id.multi_player_button);
         final EditText gameID = findViewById(R.id.game_id);
@@ -75,7 +89,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signInIntent = client.getSignInIntent();
+                startActivityForResult(signInIntent, 1234);
+            }
+        });
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).requestEmail().build();
+        client = GoogleSignIn.getClient(this,gso);
         // Create Lobby
         // Create/Join Lobby Button
 
@@ -128,5 +151,32 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account != null){
+            signInButton.setVisibility(View.GONE);
+            linearLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1234){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try{
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                if(account != null){
+                    signInButton.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.VISIBLE);
+                }
+            }catch (ApiException apiException){
+                Log.w("Poker", "Sign in result: Failed Code = " + apiException.getStatusCode());
+            }
+        }
     }
 }

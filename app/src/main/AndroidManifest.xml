@@ -14,17 +14,18 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_singler_player_game"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen"></activity>
+            android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen" />
         <activity
             android:name=".MultiPlayerGame"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="title_activity_mutli_player_game"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen"></activity>
+            android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.comp3003_pokerapp_psysb7.NoActionBar">
+            android:theme="@style/Theme.comp3003_pokerapp_psysb7.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
