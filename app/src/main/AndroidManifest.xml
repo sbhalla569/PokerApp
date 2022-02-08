@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shivbhalla.comp3003_pokerapp_psysb7">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.comp3003_pokerapp_psysb7">
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
         <activity
             android:name=".SinglePlayerGame"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -23,9 +28,9 @@
             android:theme="@style/Theme.comp3003_pokerapp_psysb7.Fullscreen" />
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.comp3003_pokerapp_psysb7.NoActionBar"
-            android:exported="true">
+            android:theme="@style/Theme.comp3003_pokerapp_psysb7.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
