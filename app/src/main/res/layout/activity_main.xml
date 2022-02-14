@@ -30,15 +30,6 @@
             android:layout_height="wrap_content"
             android:text="Play MultiPlayer" />
 
-        <EditText
-            android:id="@+id/game_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Multiplayer gameID"
-            android:inputType="number"
-            android:minHeight="48dp" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

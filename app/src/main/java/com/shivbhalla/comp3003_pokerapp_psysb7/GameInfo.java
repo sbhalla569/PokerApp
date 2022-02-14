@@ -10,6 +10,9 @@ public class GameInfo {
     public static interface IGameReceiver{
         void receiveGame(GameInfo game);
     }
+    public static interface IGameList{
+        void receiveList(GameInfo[] list);
+    }
     int dealer;
     List<Integer> deck;
     int gameID;

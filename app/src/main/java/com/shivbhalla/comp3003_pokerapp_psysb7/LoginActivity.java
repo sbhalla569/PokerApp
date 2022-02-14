@@ -1,20 +1,17 @@
 package com.shivbhalla.comp3003_pokerapp_psysb7;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityLoginBinding;
-import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMainBinding;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText email;
     EditText password;
     Button signIn;
+    Button register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.username);
         password = findViewById(R.id.password);
         signIn = findViewById(R.id.login);
+        register = findViewById(R.id.register);
 
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         if(auth.getCurrentUser() != null){
@@ -43,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 auth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
+                        Toast.makeText(LoginActivity.this, "Signed In", Toast.LENGTH_SHORT).show();
                         finish();
                     }else{
                         Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
@@ -50,5 +50,13 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, CreateActivity.class));
+            }
+        });
+
     }
 }

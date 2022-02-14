@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 //        signInButton = findViewById(R.id.google_login);
         Button playSingle = findViewById(R.id.single_player_button);
         Button playMulti = findViewById(R.id.multi_player_button);
-        final EditText gameID = findViewById(R.id.game_id);
+
         playSingle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,9 +83,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    int ID = Integer.parseInt(gameID.getText().toString());
-                    Intent intent = new Intent(getApplicationContext(), MultiPlayerGame.class);
-                    intent.putExtra("gameID", ID);
+                    Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                     startActivity(intent);
                 } catch (NumberFormatException e){
                     System.out.println("ERROR");
