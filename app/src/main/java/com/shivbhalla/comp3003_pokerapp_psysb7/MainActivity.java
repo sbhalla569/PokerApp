@@ -29,6 +29,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,12 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     GoogleSignInClient client;
     private FirebaseAuth auth;
-//    SignInButton signInButton;
     LinearLayout linearLayout;
-    // sends and processes message and runnable objects
-//    private static final Handler mainLoop = new Handler();
-
-//    private Deck deck;
+    TextView displayName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
 //        signInButton = findViewById(R.id.google_login);
         Button playSingle = findViewById(R.id.single_player_button);
         Button playMulti = findViewById(R.id.multi_player_button);
+        Button logOut = findViewById(R.id.logout_button);
+        displayName = findViewById(R.id.display_name);
 
         playSingle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+        });
+
+        logOut.setOnClickListener(view -> {
+            auth.signOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         });
 
 //        signInButton.setOnClickListener(new View.OnClickListener() {
@@ -125,10 +134,20 @@ public class MainActivity extends AppCompatActivity {
 //        }, 200);
 
 
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+//        FirebaseAuth.getInstance().signOut();
+        if(auth.getCurrentUser() == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }else{
+            displayName.setText(Objects.requireNonNull(auth.getCurrentUser()).getEmail());
+        }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        displayName.setText(Objects.requireNonNull(auth.getCurrentUser()).getEmail());
     }
 
     @Override

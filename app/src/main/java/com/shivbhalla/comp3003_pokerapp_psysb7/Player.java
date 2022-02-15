@@ -1,6 +1,7 @@
 package com.shivbhalla.comp3003_pokerapp_psysb7;
 
 public class Player {
+    private String username;
     private int card1;
     private int card2;
     private int chipValue;
@@ -13,14 +14,16 @@ public class Player {
         chipValue = 0;
         raiseValue = 0;
         folded = false;
+        username = "";
     }
 
-    public Player(int chipValue) {
+    public Player(int chipValue, String username) {
         this.chipValue = chipValue;
         card1 = 0;
         card2 = 0;
         raiseValue = 0;
         folded = false;
+        this.username = username;
     }
 
     public int getRaiseValue() {
@@ -53,6 +56,14 @@ public class Player {
 
     public void setChipValue(int chipValue) {
         this.chipValue = chipValue;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public boolean isFolded() {

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMultiPlayerGameBinding;
 
 import java.util.ArrayList;
@@ -197,17 +198,20 @@ public class MultiPlayerGame extends AppCompatActivity {
         playerMarkers[2] = findViewById(R.id.player_marker_2);
         playerMarkers[3] = findViewById(R.id.player_marker_3);
 
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+
         gameID = getIntent().getIntExtra("gameID",-1);
         FirebaseManager.getGameInfo(gameID, new GameInfo.IGameReceiver() {
             @Override
             public void receiveGame(GameInfo game) {
+                String displayName = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
                 if(game == null){
                     GameInfo gi = new GameInfo();
                     gi.setGameID(gameID);
                     gi.setPot(0);
 
                     List<Player> players = new ArrayList<>();
-                    players.add(new Player(500));
+                    players.add(new Player(500, displayName));
                     gi.setPlayers(players);
                     gi.setCurrentPlayer(-1);
                     FirebaseManager.setGameInfo(gi);
@@ -216,13 +220,20 @@ public class MultiPlayerGame extends AppCompatActivity {
                     return;
                 }
                 List<Player> players = game.getPlayers();
+                for(int i=0; i< players.size(); i++){
+                    if(players.get(i).getUsername().equals(displayName)){
+                        thisPlayer = i;
+                        playerMarkers[i].setVisibility(View.VISIBLE);
+                        return;
+                    }
+                }
                 if(players.size() >= 4){
                     finish();
                     return;
                 }
                 thisPlayer = players.size();
                 playerMarkers[thisPlayer].setVisibility(View.VISIBLE);
-                players.add(new Player(500));
+                players.add(new Player(500, displayName));
                 game.setPlayers(players);
                 if(players.size() > 3){
 //                    Random rand = new Random();
