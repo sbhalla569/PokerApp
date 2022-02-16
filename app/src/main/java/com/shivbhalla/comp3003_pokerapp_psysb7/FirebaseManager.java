@@ -67,7 +67,7 @@ public class FirebaseManager {
 
     public static void getGameList(GameInfo.IGameList onComplete){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("games").whereGreaterThan("gameID",0).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("games").whereLessThan("gameState",2).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -77,7 +77,6 @@ public class FirebaseManager {
                         onComplete.receiveList(null);
                         return;
                     }
-                    games = games.stream().filter(gameInfo -> gameInfo.players.size() < 4).collect(Collectors.toList());
                     onComplete.receiveList(games.toArray(new GameInfo[0]));
                 }
             }

@@ -21,6 +21,7 @@ public class GameInfo {
     int stage;
     List<Integer> table;
     int currentPlayer;
+    int gameState;
 
     public GameInfo(){
         dealer = 0;
@@ -31,6 +32,15 @@ public class GameInfo {
         players = new ArrayList<>();
         pot = 0;
         currentPlayer = 0;
+        gameState = 0;
+    }
+
+    public int getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(int gameState) {
+        this.gameState = gameState;
     }
 
     public int getCurrentPlayer() {
