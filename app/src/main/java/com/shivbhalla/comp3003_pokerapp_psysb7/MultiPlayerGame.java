@@ -92,7 +92,7 @@ public class MultiPlayerGame extends AppCompatActivity {
             FirebaseManager.getGameInfo(gameID, new GameInfo.IGameReceiver() {
                 @Override
                 public void receiveGame(GameInfo game) {
-                    if(game != null){
+                    if(game != null && game.gameState > 0){
                         List<Player> playerList = game.getPlayers();
                         if(game.gameState == 2){
                             if(playerList.get(thisPlayer).getChipValue() > 0){
@@ -107,9 +107,16 @@ public class MultiPlayerGame extends AppCompatActivity {
                             players[i].setChipValue(0);
                             if(i < playerList.size()){
                                 players[i].setChipValue(playerList.get(i).getChipValue());
+                                players[i].setCards(game.players.get(i).getCard1(),game.players.get(i).getCard2());
+                                if(game.stage == 4 && !game.players.get(i).isFolded()){
+                                    players[i].showHand();
+                                }else if(game.players.get(i).isFolded()){
+                                    players[i].fold();
+                                }
                             }
                         }
-                        // TODO: validate game object
+                        pot.setChipValue(game.pot);
+                        players[thisPlayer].showHand();
                         if(game.currentPlayer == thisPlayer){
                             // Perform player actions
                             info = game;
@@ -120,12 +127,65 @@ public class MultiPlayerGame extends AppCompatActivity {
                                 foldButton.setVisibility(View.VISIBLE);
                                 int highest = 0;
                                 for(int i = 0; i < 4; i++){
-                                    if(info.table.get(i) > highest){
-                                        highest = info.table.get(i);
+                                    if(info.players.get(i).getRaiseValue() > highest){
+                                        highest = info.players.get(i).getRaiseValue();
                                     }
                                 }
-                                if(info.table.get(thisPlayer) == highest){
+                                if(info.players.get(thisPlayer).getRaiseValue() == highest && info.dealer == thisPlayer){
+                                    switch (info.stage){
+                                        case 1:
+                                            info.table.set(0,info.deck.get(0));
+                                            info.table.set(1,info.deck.get(1));
+                                            info.table.set(2,info.deck.get(2));
+                                            info.deck.remove(0);
+                                            info.deck.remove(1);
+                                            info.deck.remove(2);
+                                            info.stage = 2;
+                                            break;
 
+                                        case 2:
+                                            info.table.set(3,info.deck.get(0));
+                                            info.deck.remove(0);
+                                            info.stage = 3;
+                                            break;
+
+                                        case 3:
+                                            info.table.set(4,info.deck.get(0));
+                                            info.deck.remove(0);
+                                            info.stage = 4;
+                                            break;
+
+                                        case 4:
+                                            int[] value;
+                                            int bestHand = 0;
+                                            int bestCard = 0;
+                                            int bestPlayer = 0;
+                                            for (int i = 0; i <players.length; i++){
+                                                // If player fold they are out of the game
+                                                if(info.players.get(i).isFolded()){
+                                                    continue;
+                                                }
+                                                value = tableCards.getBestHand(info.players.get(i).getCards());
+                                                if(value[0] >= bestHand){
+                                                    // NEED TO DOUBLE CHECK DRAWS
+                                                    if(value[0] > bestHand || value[1] > bestCard){
+                                                        bestPlayer = i;
+                                                        bestHand = value[0];
+                                                        bestCard = value[1];
+                                                    }
+                                                }
+                                            }
+                                            // Giving winning player chips
+                                            info.players.get(bestPlayer).addChipValue(info.pot);
+                                            info.pot = 0;
+                                            info.stage = 1;
+                                            break;
+                                    }
+                                    for(int i = 0; i<4; i++){
+                                        info.players.get(i).setRaiseValue(0);
+                                    }
+                                    info.dealer = thisPlayer;
+                                    FirebaseManager.setGameInfo(info);
                                 }
                             }else{
                                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
@@ -270,7 +330,25 @@ public class MultiPlayerGame extends AppCompatActivity {
                 if(players.size() > 3){
                     game.setCurrentPlayer(3);
                     game.setGameState(1);
-                    addBlinds(game, 3);
+                    game.dealer = 2;
+                    game.stage = 1;
+                    game.players.get(0).setCard1(info.deck.get(0));
+                    game.players.get(0).setCard2(info.deck.get(1));
+                    game.players.get(1).setCard1(info.deck.get(2));
+                    game.players.get(1).setCard2(info.deck.get(3));
+                    game.players.get(2).setCard1(info.deck.get(4));
+                    game.players.get(2).setCard2(info.deck.get(5));
+                    game.players.get(3).setCard1(info.deck.get(6));
+                    game.players.get(3).setCard2(info.deck.get(7));
+                    info.deck.remove(0);
+                    info.deck.remove(1);
+                    info.deck.remove(2);
+                    info.deck.remove(3);
+                    info.deck.remove(4);
+                    info.deck.remove(5);
+                    info.deck.remove(6);
+                    info.deck.remove(7);
+                    addBlinds(game, 0);
                 }
                 FirebaseManager.setGameInfo(game);
             }
@@ -310,22 +388,23 @@ public class MultiPlayerGame extends AppCompatActivity {
                 int raiseValue = 50;
                 int highest = 0;
                 for(int i = 0; i < 4; i++){
-                    if(info.table.get(i) > highest){
-                        highest = info.table.get(i);
+                    if(info.players.get(i).getRaiseValue() > highest){
+                        highest = info.players.get(i).getRaiseValue();
                     }
                 }
                 // DOUBLE CHECK FOR SAFETY
-                raiseValue += highest - info.table.get(thisPlayer);
+                raiseValue += highest - info.players.get(thisPlayer).getRaiseValue();
                 if(info.players.get(thisPlayer).getChipValue() < raiseValue){
                     raiseValue = info.players.get(thisPlayer).getChipValue();
                 }
                 players[thisPlayer].setChipValue(players[thisPlayer].getChipValue() - raiseValue);
+                info.players.get(thisPlayer).setRaiseValue(raiseValue);
                 Objects.requireNonNull(info.getPlayers().get(thisPlayer)).setChipValue(players[thisPlayer].getChipValue());
                 pot.addChips(raiseValue);
                 info.setPot(pot.getChipValue());
                 playerPotValue[0] += raiseValue;
-                info.table.set(thisPlayer, info.table.get(thisPlayer) + raiseValue);
                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+                info.dealer = thisPlayer;
                 FirebaseManager.setGameInfo(info);
                 playerActed = true;
                 raiseButton.setVisibility(View.GONE);
@@ -360,13 +439,13 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
                 int highest = 0;
                 for(int i = 0; i < 4; i++){
-                    if(info.table.get(i) > highest){
-                        highest = info.table.get(i);
+                    if(info.players.get(i).getRaiseValue() > highest){
+                        highest = info.players.get(i).getRaiseValue();
                     }
                 }
-                int current = info.table.get(thisPlayer);
+                int current = info.players.get(thisPlayer).getRaiseValue();
                 info.players.get(thisPlayer).setChipValue(info.players.get(thisPlayer).getChipValue() - (highest - current));
-                info.table.set(thisPlayer, info.table.get(thisPlayer) + (highest - current));
+                info.players.get(thisPlayer).setRaiseValue(highest);
                 FirebaseManager.setGameInfo(info);
                 playerActed = true;
                 raiseButton.setVisibility(View.GONE);
@@ -404,9 +483,9 @@ public class MultiPlayerGame extends AppCompatActivity {
             bigBlind = (playerValue + i) % players.length;
         }
         gameInfo.players.get(smallBlind).setChipValue(gameInfo.players.get(smallBlind).getChipValue() - 25);
-        gameInfo.table.set(smallBlind, 25);
+        gameInfo.players.get(smallBlind).setRaiseValue(25);
         gameInfo.players.get(bigBlind).setChipValue(gameInfo.players.get(bigBlind).getChipValue() - 50);
-        gameInfo.table.set(bigBlind, 50);
+        gameInfo.players.get(bigBlind).setRaiseValue(50);
         gameInfo.pot += 75;
     }
 

@@ -73,4 +73,10 @@ public class Player {
     public void setFolded(boolean folded) {
         this.folded = folded;
     }
+
+    public int[] getCards(){ return new int[]{card1,card2}; }
+
+    public void addChipValue(int chipValue){
+        this.chipValue += chipValue;
+    }
 }
