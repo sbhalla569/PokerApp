@@ -62,6 +62,31 @@ public class TableCards extends Fragment {
         turnValue = turn;
     }
 
+    public void showCard(int card, int cardID){
+        switch(card){
+            case 0:
+                river1.setImageResource(Cards.getCard(cardID));
+                river1Value = cardID;
+                break;
+            case 1:
+                river2.setImageResource(Cards.getCard(cardID));
+                river2Value = cardID;
+                break;
+            case 2:
+                river3.setImageResource(Cards.getCard(cardID));
+                river3Value = cardID;
+                break;
+            case 3:
+                flop.setImageResource(Cards.getCard(cardID));
+                flopValue = cardID;
+                break;
+            case 4:
+                turnCard.setImageResource(Cards.getCard(cardID));
+                turnValue = cardID;
+                break;
+        }
+    }
+
     // Sets cards to face back
     public void reset(){
         river1.setImageResource(R.drawable.card_back);

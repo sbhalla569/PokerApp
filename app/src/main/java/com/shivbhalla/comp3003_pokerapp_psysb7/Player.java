@@ -74,8 +74,6 @@ public class Player {
         this.folded = folded;
     }
 
-    public int[] getCards(){ return new int[]{card1,card2}; }
-
     public void addChipValue(int chipValue){
         this.chipValue += chipValue;
     }

@@ -22,6 +22,7 @@ public class GameInfo {
     List<Integer> table;
     int currentPlayer;
     int gameState;
+    int lastActed;
 
     public GameInfo(){
         dealer = 0;
@@ -33,6 +34,13 @@ public class GameInfo {
         pot = 0;
         currentPlayer = 0;
         gameState = 0;
+        lastActed = 0;
+
+        table.add(-1);
+        table.add(-1);
+        table.add(-1);
+        table.add(-1);
+        table.add(-1);
     }
 
     public int getGameState() {
@@ -53,6 +61,14 @@ public class GameInfo {
 
     public int getDealer() {
         return dealer;
+    }
+
+    public int getLastActed() {
+        return lastActed;
+    }
+
+    public void setLastActed(int lastActed) {
+        this.lastActed = lastActed;
     }
 
     public void setDealer(int dealer) {
@@ -105,5 +121,16 @@ public class GameInfo {
 
     public void setTable(List<Integer> table) {
         this.table = table;
+    }
+
+    public void buildDeck(){
+        Deck source = new Deck();
+        for(int i=0; i<52; i++){
+            try{
+                deck.add(source.drawCard());
+            }catch(Exception ignored){
+
+            }
+        }
     }
 }

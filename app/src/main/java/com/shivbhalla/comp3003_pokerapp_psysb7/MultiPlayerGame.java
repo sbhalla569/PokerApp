@@ -108,11 +108,16 @@ public class MultiPlayerGame extends AppCompatActivity {
                             if(i < playerList.size()){
                                 players[i].setChipValue(playerList.get(i).getChipValue());
                                 players[i].setCards(game.players.get(i).getCard1(),game.players.get(i).getCard2());
-                                if(game.stage == 4 && !game.players.get(i).isFolded()){
+                                if(game.stage == 5 & !game.players.get(i).isFolded()){
                                     players[i].showHand();
                                 }else if(game.players.get(i).isFolded()){
                                     players[i].fold();
                                 }
+                            }
+                        }
+                        for(int i=0;i<5;i++){
+                            if(game.table.get(i) >= 0){
+                                tableCards.showCard(i,game.table.get(i));
                             }
                         }
                         pot.setChipValue(game.pot);
@@ -131,8 +136,13 @@ public class MultiPlayerGame extends AppCompatActivity {
                                         highest = info.players.get(i).getRaiseValue();
                                     }
                                 }
-                                if(info.players.get(thisPlayer).getRaiseValue() == highest && info.dealer == thisPlayer){
+                                if(info.players.get(thisPlayer).getRaiseValue() == highest && info.dealer == thisPlayer && info.lastActed != thisPlayer){
                                     switch (info.stage){
+                                        case 0:
+                                            info.stage = 1;
+                                            info.lastActed = thisPlayer;
+                                            break;
+
                                         case 1:
                                             info.table.set(0,info.deck.get(0));
                                             info.table.set(1,info.deck.get(1));
@@ -141,18 +151,21 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             info.deck.remove(1);
                                             info.deck.remove(2);
                                             info.stage = 2;
+                                            info.lastActed = thisPlayer;
                                             break;
 
                                         case 2:
                                             info.table.set(3,info.deck.get(0));
                                             info.deck.remove(0);
                                             info.stage = 3;
+                                            info.lastActed = thisPlayer;
                                             break;
 
                                         case 3:
                                             info.table.set(4,info.deck.get(0));
                                             info.deck.remove(0);
                                             info.stage = 4;
+                                            info.lastActed = thisPlayer;
                                             break;
 
                                         case 4:
@@ -165,7 +178,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                                 if(info.players.get(i).isFolded()){
                                                     continue;
                                                 }
-                                                value = tableCards.getBestHand(info.players.get(i).getCards());
+                                                value = tableCards.getBestHand(new int[]{info.players.get(i).getCard1(),info.players.get(i).getCard2() });
                                                 if(value[0] >= bestHand){
                                                     // NEED TO DOUBLE CHECK DRAWS
                                                     if(value[0] > bestHand || value[1] > bestCard){
@@ -178,7 +191,8 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             // Giving winning player chips
                                             info.players.get(bestPlayer).addChipValue(info.pot);
                                             info.pot = 0;
-                                            info.stage = 1;
+                                            info.stage = 5;
+                                            info.lastActed = thisPlayer;
                                             break;
                                     }
                                     for(int i = 0; i<4; i++){
@@ -331,23 +345,24 @@ public class MultiPlayerGame extends AppCompatActivity {
                     game.setCurrentPlayer(3);
                     game.setGameState(1);
                     game.dealer = 2;
-                    game.stage = 1;
-                    game.players.get(0).setCard1(info.deck.get(0));
-                    game.players.get(0).setCard2(info.deck.get(1));
-                    game.players.get(1).setCard1(info.deck.get(2));
-                    game.players.get(1).setCard2(info.deck.get(3));
-                    game.players.get(2).setCard1(info.deck.get(4));
-                    game.players.get(2).setCard2(info.deck.get(5));
-                    game.players.get(3).setCard1(info.deck.get(6));
-                    game.players.get(3).setCard2(info.deck.get(7));
-                    info.deck.remove(0);
-                    info.deck.remove(1);
-                    info.deck.remove(2);
-                    info.deck.remove(3);
-                    info.deck.remove(4);
-                    info.deck.remove(5);
-                    info.deck.remove(6);
-                    info.deck.remove(7);
+                    game.stage = 0;
+                    game.buildDeck();
+                    game.players.get(0).setCard1(game.deck.get(0));
+                    game.players.get(0).setCard2(game.deck.get(1));
+                    game.players.get(1).setCard1(game.deck.get(2));
+                    game.players.get(1).setCard2(game.deck.get(3));
+                    game.players.get(2).setCard1(game.deck.get(4));
+                    game.players.get(2).setCard2(game.deck.get(5));
+                    game.players.get(3).setCard1(game.deck.get(6));
+                    game.players.get(3).setCard2(game.deck.get(7));
+                    game.deck.remove(0);
+                    game.deck.remove(0);
+                    game.deck.remove(0);
+                    game.deck.remove(0);
+                    game.deck.remove(0);
+                    game.deck.remove(0);
+                    game.deck.remove(0);
+                    game.deck.remove(0);
                     addBlinds(game, 0);
                 }
                 FirebaseManager.setGameInfo(game);
@@ -405,6 +420,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 playerPotValue[0] += raiseValue;
                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
                 info.dealer = thisPlayer;
+                info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
                 playerActed = true;
                 raiseButton.setVisibility(View.GONE);
@@ -422,6 +438,7 @@ public class MultiPlayerGame extends AppCompatActivity {
             players[thisPlayer].fold();
             Objects.requireNonNull(info.getPlayers().get(thisPlayer)).setFolded(true);
             info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+            info.lastActed = thisPlayer;
             FirebaseManager.setGameInfo(info);
             playerActed = true;
             raiseButton.setVisibility(View.GONE);
@@ -446,6 +463,9 @@ public class MultiPlayerGame extends AppCompatActivity {
                 int current = info.players.get(thisPlayer).getRaiseValue();
                 info.players.get(thisPlayer).setChipValue(info.players.get(thisPlayer).getChipValue() - (highest - current));
                 info.players.get(thisPlayer).setRaiseValue(highest);
+                pot.addChips(highest - current);
+                info.setPot(pot.getChipValue());
+                info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
                 playerActed = true;
                 raiseButton.setVisibility(View.GONE);
