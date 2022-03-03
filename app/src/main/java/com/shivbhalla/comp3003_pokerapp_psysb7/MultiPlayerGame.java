@@ -18,7 +18,6 @@ import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMultiPlayerGa
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -115,6 +114,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                 }
                             }
                         }
+                        tableCards.reset();
                         for(int i=0;i<5;i++){
                             if(game.table.get(i) >= 0){
                                 tableCards.showCard(i,game.table.get(i));
@@ -125,6 +125,9 @@ public class MultiPlayerGame extends AppCompatActivity {
                         if(game.currentPlayer == thisPlayer){
                             // Perform player actions
                             info = game;
+                            if(info.stage == 5){
+                                info.lastActed = -1;
+                            }
                             if(players[thisPlayer].getChipValue() > 0) {
                                 playerActed = false;
                                 raiseButton.setVisibility(View.VISIBLE);
@@ -136,7 +139,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                         highest = info.players.get(i).getRaiseValue();
                                     }
                                 }
-                                if(info.players.get(thisPlayer).getRaiseValue() == highest && info.dealer == thisPlayer && info.lastActed != thisPlayer){
+                                if(info.players.get(thisPlayer).getRaiseValue() == highest && info.actingPlayer == thisPlayer && info.lastActed != thisPlayer){
                                     switch (info.stage){
                                         case 0:
                                             info.stage = 1;
@@ -148,10 +151,13 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             info.table.set(1,info.deck.get(1));
                                             info.table.set(2,info.deck.get(2));
                                             info.deck.remove(0);
-                                            info.deck.remove(1);
-                                            info.deck.remove(2);
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
                                             info.stage = 2;
                                             info.lastActed = thisPlayer;
+                                            tableCards.showCard(0,game.table.get(0));
+                                            tableCards.showCard(1,game.table.get(1));
+                                            tableCards.showCard(2,game.table.get(2));
                                             break;
 
                                         case 2:
@@ -159,6 +165,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             info.deck.remove(0);
                                             info.stage = 3;
                                             info.lastActed = thisPlayer;
+                                            tableCards.showCard(3,game.table.get(3));
                                             break;
 
                                         case 3:
@@ -166,6 +173,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             info.deck.remove(0);
                                             info.stage = 4;
                                             info.lastActed = thisPlayer;
+                                            tableCards.showCard(4,game.table.get(4));
                                             break;
 
                                         case 4:
@@ -194,11 +202,45 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             info.stage = 5;
                                             info.lastActed = thisPlayer;
                                             break;
+                                        case 5:
+                                            info.table.set(0,-1);
+                                            info.table.set(1,-1);
+                                            info.table.set(2,-1);
+                                            info.table.set(3,-1);
+                                            info.table.set(4,-1);
+                                            if(info.deck.size() < 13){
+                                                game.buildDeck();
+                                            }
+                                            info.players.get(0).setCard1(info.deck.get(0));
+                                            info.players.get(0).setCard2(info.deck.get(1));
+                                            info.players.get(1).setCard1(info.deck.get(2));
+                                            info.players.get(1).setCard2(info.deck.get(3));
+                                            info.players.get(2).setCard1(info.deck.get(4));
+                                            info.players.get(2).setCard2(info.deck.get(5));
+                                            info.players.get(3).setCard1(info.deck.get(6));
+                                            info.players.get(3).setCard2(info.deck.get(7));
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
+                                            info.deck.remove(0);
+                                            info.dealer = (info.dealer + 1) % 4;
+                                            addBlinds(info, info.dealer);
+                                            info.actingPlayer = (info.dealer + 2) % 4;
+                                            info.stage = 0;
+                                            mainHandler.postDelayed(mMainLoop, 5000);
+                                            break;
+
                                     }
-                                    for(int i = 0; i<4; i++){
-                                        info.players.get(i).setRaiseValue(0);
+                                    if(info.stage > 1){
+                                        for(int i = 0; i<4; i++){
+                                            info.players.get(i).setRaiseValue(0);
+                                        }
                                     }
-                                    info.dealer = thisPlayer;
+                                    info.actingPlayer = thisPlayer;
                                     FirebaseManager.setGameInfo(info);
                                 }
                             }else{
@@ -344,7 +386,8 @@ public class MultiPlayerGame extends AppCompatActivity {
                 if(players.size() > 3){
                     game.setCurrentPlayer(3);
                     game.setGameState(1);
-                    game.dealer = 2;
+                    game.actingPlayer = 2;
+                    game.dealer = 3;
                     game.stage = 0;
                     game.buildDeck();
                     game.players.get(0).setCard1(game.deck.get(0));
@@ -363,7 +406,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                     game.deck.remove(0);
                     game.deck.remove(0);
                     game.deck.remove(0);
-                    addBlinds(game, 0);
+                    addBlinds(game, game.dealer);
                 }
                 FirebaseManager.setGameInfo(game);
             }
@@ -419,7 +462,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.setPot(pot.getChipValue());
                 playerPotValue[0] += raiseValue;
                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
-                info.dealer = thisPlayer;
+                info.actingPlayer = thisPlayer;
                 info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
                 playerActed = true;

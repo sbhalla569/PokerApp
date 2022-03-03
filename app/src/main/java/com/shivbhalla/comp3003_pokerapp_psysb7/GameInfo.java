@@ -2,8 +2,6 @@ package com.shivbhalla.comp3003_pokerapp_psysb7;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 // Retrieves info from database
 public class GameInfo {
@@ -13,7 +11,7 @@ public class GameInfo {
     public static interface IGameList{
         void receiveList(GameInfo[] list);
     }
-    int dealer;
+    int actingPlayer;
     List<Integer> deck;
     int gameID;
     List<Player> players;
@@ -23,9 +21,10 @@ public class GameInfo {
     int currentPlayer;
     int gameState;
     int lastActed;
+    int dealer;
 
     public GameInfo(){
-        dealer = 0;
+        actingPlayer = 0;
         gameID = 0;
         stage = 0;
         deck = new ArrayList<>();
@@ -35,12 +34,21 @@ public class GameInfo {
         currentPlayer = 0;
         gameState = 0;
         lastActed = 0;
+        dealer = 0;
 
         table.add(-1);
         table.add(-1);
         table.add(-1);
         table.add(-1);
         table.add(-1);
+    }
+
+    public int getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(int dealer) {
+        this.dealer = dealer;
     }
 
     public int getGameState() {
@@ -59,8 +67,8 @@ public class GameInfo {
         this.currentPlayer = currentPlayer;
     }
 
-    public int getDealer() {
-        return dealer;
+    public int getActingPlayer() {
+        return actingPlayer;
     }
 
     public int getLastActed() {
@@ -71,8 +79,8 @@ public class GameInfo {
         this.lastActed = lastActed;
     }
 
-    public void setDealer(int dealer) {
-        this.dealer = dealer;
+    public void setActingPlayer(int actingPlayer) {
+        this.actingPlayer = actingPlayer;
     }
 
     public List<Integer> getDeck() {
