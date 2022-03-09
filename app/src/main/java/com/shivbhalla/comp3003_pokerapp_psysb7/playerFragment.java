@@ -21,7 +21,6 @@ public class playerFragment extends Fragment {
 
     private ImageView leftCard;
     private ImageView rightCard;
-    private Chips playerChips;
 
     private ImageView[] redChips; // 1
     private ImageView[] pinkChips; // 5
@@ -29,8 +28,8 @@ public class playerFragment extends Fragment {
     private ImageView[] yellowChips; // 100
     private ImageView[] blueChips; // 500
     private ImageView[] greenChips; // 1500
-    private ImageView dealerChip;
     private TextView text;
+    private TextView displayName;
     private int chipValue;
     private boolean showCards = false;
     private boolean hasFolded = false;
@@ -163,9 +162,14 @@ public class playerFragment extends Fragment {
         greenChips[1] = (ImageView) view.findViewById(R.id.green_b);
 
         text = (TextView) view.findViewById(R.id.chip_value2);
+        displayName = (TextView) view.findViewById(R.id.displayname);
 
         setChipValue();
         return view;
+    }
+
+    public void setDisplayName(String displayName){
+        this.displayName.setText(displayName);
     }
 
     // Clears the chips

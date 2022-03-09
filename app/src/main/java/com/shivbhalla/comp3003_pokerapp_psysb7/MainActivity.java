@@ -1,6 +1,7 @@
 package com.shivbhalla.comp3003_pokerapp_psysb7;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -17,11 +18,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMainBinding;
 
+import android.text.Editable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     LinearLayout linearLayout;
     TextView displayName;
+    EditText changeUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +61,22 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         linearLayout = findViewById(R.id.linearLayout);
-//        signInButton = findViewById(R.id.google_login);
         Button playSingle = findViewById(R.id.single_player_button);
         Button playMulti = findViewById(R.id.multi_player_button);
         Button logOut = findViewById(R.id.logout_button);
         displayName = findViewById(R.id.display_name);
+        changeUsername = findViewById(R.id.change_username);
+        SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
+        changeUsername.setText(pref.getString("Username", "Player"));
+
+        changeUsername.setOnKeyListener((view, i, keyEvent) -> {
+            SharedPreferences.Editor editor = getSharedPreferences("PokerGame", MODE_PRIVATE).edit();
+            editor.putString("Username", changeUsername.getText().toString());
+            editor.apply();
+            return false;
+        });
 
         playSingle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,13 +104,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-//        signInButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent signInIntent = client.getSignInIntent();
-//                startActivityForResult(signInIntent, 1234);
-//            }
-//        });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).requestEmail().build();
         client = GoogleSignIn.getClient(this,gso);
@@ -108,30 +112,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Create Multiplayer Button
 
-//        deck = new Deck();
-//        // Binds Chips to the chip holder on both fragments
-//        playerFragment player = new playerFragment(150);
-//        getSupportFragmentManager().beginTransaction().add(R.id.chipHolder, player, "player").disallowAddToBackStack().commit();
-//        mainLoop.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    int[] hand = deck.drawHand();
-//                    player.setCards(hand[0],hand[1]);
-//                    // player.showHand();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, 200);
-
-
-//        FirebaseAuth.getInstance().signOut();
         if(auth.getCurrentUser() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }else{
             displayName.setText(Objects.requireNonNull(auth.getCurrentUser()).getEmail());
+            if(changeUsername.getText().toString().equals("Player")){
+                changeUsername.setText(displayName.getText());
+                SharedPreferences.Editor editor = getSharedPreferences("PokerGame", MODE_PRIVATE).edit();
+                editor.putString("Username", changeUsername.getText().toString());
+                editor.apply();
+            }
         }
 
     }
@@ -140,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         displayName.setText(Objects.requireNonNull(auth.getCurrentUser()).getEmail());
+        if(changeUsername.getText().toString().equals("Player")){
+            changeUsername.setText(displayName.getText());
+            SharedPreferences.Editor editor = getSharedPreferences("PokerGame", MODE_PRIVATE).edit();
+            editor.putString("Username", changeUsername.getText().toString());
+            editor.apply();
+        }
     }
 
     @Override

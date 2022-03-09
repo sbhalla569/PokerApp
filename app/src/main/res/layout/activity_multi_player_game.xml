@@ -36,10 +36,11 @@
             android:id="@+id/player_1"
             android:name="com.shivbhalla.comp3003_pokerapp_psysb7.playerFragment"
             android:layout_width="90dp"
-            android:layout_height="100dp"
+            android:layout_height="130dp"
             android:translationY="-20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.23"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout="@layout/fragment_player" />
 
@@ -47,7 +48,7 @@
             android:id="@+id/player_2"
             android:name="com.shivbhalla.comp3003_pokerapp_psysb7.playerFragment"
             android:layout_width="90dp"
-            android:layout_height="100dp"
+            android:layout_height="130dp"
             android:translationX="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,9 +59,10 @@
             android:id="@+id/player_3"
             android:name="com.shivbhalla.comp3003_pokerapp_psysb7.playerFragment"
             android:layout_width="90dp"
-            android:layout_height="100dp"
+            android:layout_height="130dp"
             android:translationY="20dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.74"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout="@layout/fragment_player" />
@@ -69,7 +71,7 @@
             android:id="@+id/player_4"
             android:name="com.shivbhalla.comp3003_pokerapp_psysb7.playerFragment"
             android:layout_width="90dp"
-            android:layout_height="100dp"
+            android:layout_height="130dp"
             android:translationX="-25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -125,6 +127,28 @@
             android:text="Raise"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/fold_button" />
+
+        <SeekBar
+            android:id="@+id/raiseslider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:max="100"
+            android:progress="1"
+            app:layout_constraintBottom_toTopOf="@+id/call_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/raise_button" />
+
+        <TextView
+            android:id="@+id/raisevalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:text="50"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/raiseslider"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/dealer_0"

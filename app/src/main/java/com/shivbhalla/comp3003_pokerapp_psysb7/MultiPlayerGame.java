@@ -1,6 +1,7 @@
 package com.shivbhalla.comp3003_pokerapp_psysb7;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,6 +58,8 @@ public class MultiPlayerGame extends AppCompatActivity {
     private Button callButton;
     private Button foldButton;
     private Button raiseButton;
+    private TextView raiseTextValue;
+    private SeekBar raiseBar;
     // Counts how many times looped
     private int runCounter = 0;
     // Who is allowed to make actions
@@ -70,6 +75,7 @@ public class MultiPlayerGame extends AppCompatActivity {
     private int gameID;
     private int thisPlayer;
     private GameInfo info;
+    private int highest;
     
     private int getCurrentRaiseValue(){
         int maxValue = 0;
@@ -104,6 +110,8 @@ public class MultiPlayerGame extends AppCompatActivity {
 
                         for(int i=0; i<4; i++){
                             players[i].setChipValue(0);
+                            dealerChips[i].setVisibility(game.currentPlayer == i ? View.VISIBLE:View.INVISIBLE);
+                            players[i].setDisplayName(game.players.get(i).getUsername());
                             if(i < playerList.size()){
                                 players[i].setChipValue(playerList.get(i).getChipValue());
                                 players[i].setCards(game.players.get(i).getCard1(),game.players.get(i).getCard2());
@@ -133,12 +141,16 @@ public class MultiPlayerGame extends AppCompatActivity {
                                 raiseButton.setVisibility(View.VISIBLE);
                                 callButton.setVisibility(View.VISIBLE);
                                 foldButton.setVisibility(View.VISIBLE);
-                                int highest = 0;
+                                raiseBar.setVisibility(View.VISIBLE);
+                                raiseTextValue.setVisibility(View.VISIBLE);
+                                raiseBar.setMax(players[thisPlayer].getChipValue());
+                                highest = 0;
                                 for(int i = 0; i < 4; i++){
                                     if(info.players.get(i).getRaiseValue() > highest){
                                         highest = info.players.get(i).getRaiseValue();
                                     }
                                 }
+                                raiseBar.setProgress(highest + 5);
                                 if(info.players.get(thisPlayer).getRaiseValue() == highest && info.actingPlayer == thisPlayer && info.lastActed != thisPlayer){
                                     switch (info.stage){
                                         case 0:
@@ -353,6 +365,8 @@ public class MultiPlayerGame extends AppCompatActivity {
             @Override
             public void receiveGame(GameInfo game) {
                 String displayName = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
+                SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
+                displayName = pref.getString("Username", displayName);
                 if(game == null){
                     GameInfo gi = new GameInfo();
                     gi.setGameID(gameID);
@@ -435,7 +449,31 @@ public class MultiPlayerGame extends AppCompatActivity {
         raiseButton = findViewById(R.id.raise_button);
         win = findViewById(R.id.win_frame);
         lose = findViewById(R.id.lose_frame);
+        raiseTextValue = findViewById(R.id.raisevalue);
+        raiseBar = findViewById(R.id.raiseslider);
 
+
+        raiseBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(seekBar.getProgress() < highest + 5){
+                    seekBar.setProgress(highest + 5);
+                }
+                raiseTextValue.setText(String.valueOf(seekBar.getProgress()));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        raiseBar.setProgress(5);
 
         // Raise sorted
         raiseButton.setOnClickListener(V -> {
@@ -443,13 +481,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 return;
             }
             if(players[thisPlayer].getChipValue() >= 50 && !players[thisPlayer].getFolded() && !playerActed){
-                int raiseValue = 50;
-                int highest = 0;
-                for(int i = 0; i < 4; i++){
-                    if(info.players.get(i).getRaiseValue() > highest){
-                        highest = info.players.get(i).getRaiseValue();
-                    }
-                }
+                int raiseValue = raiseBar.getProgress();
                 // DOUBLE CHECK FOR SAFETY
                 raiseValue += highest - info.players.get(thisPlayer).getRaiseValue();
                 if(info.players.get(thisPlayer).getChipValue() < raiseValue){
