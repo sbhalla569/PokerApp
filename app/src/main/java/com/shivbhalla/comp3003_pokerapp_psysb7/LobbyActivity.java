@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,10 +55,10 @@ public class LobbyActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerAdapter);
         FirebaseManager.getGameList(list -> {
             if(list != null){
-                String displayName = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
+                String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
                 List<GameInfo> gameList = Arrays.stream(list).filter(gameInfo -> {
                     boolean playerSize = gameInfo.players.size() < 4;
-                    boolean isPlaying = gameInfo.players.stream().anyMatch(player -> player.getUsername().equals(displayName));
+                    boolean isPlaying = gameInfo.players.stream().anyMatch(player -> player.getEmail().equals(email));
                     return playerSize || isPlaying;
                 }).collect(Collectors.toList());
                 recyclerAdapter.setData(gameList);

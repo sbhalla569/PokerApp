@@ -76,6 +76,8 @@ public class MultiPlayerGame extends AppCompatActivity {
     private int thisPlayer;
     private GameInfo info;
     private int highest;
+    private FirebaseAuth auth;
+
     
     private int getCurrentRaiseValue(){
         int maxValue = 0;
@@ -107,10 +109,15 @@ public class MultiPlayerGame extends AppCompatActivity {
                             }
                             return;
                         }
-
+                        String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
+                        SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
+                        String displayName = pref.getString("Username", email);
                         for(int i=0; i<4; i++){
                             players[i].setChipValue(0);
                             dealerChips[i].setVisibility(game.currentPlayer == i ? View.VISIBLE:View.INVISIBLE);
+                            if(thisPlayer == i){
+                                game.players.get(i).setUsername(displayName);
+                            }
                             players[i].setDisplayName(game.players.get(i).getUsername());
                             if(i < playerList.size()){
                                 players[i].setChipValue(playerList.get(i).getChipValue());
@@ -190,16 +197,19 @@ public class MultiPlayerGame extends AppCompatActivity {
 
                                         case 4:
                                             int[] value;
+                                            int bestPlayedHand = 0;
+                                            int bestPlayedCard = 0;
+                                            int bestPlayedPlayer = 0;
                                             int bestHand = 0;
                                             int bestCard = 0;
                                             int bestPlayer = 0;
                                             for (int i = 0; i <players.length; i++){
                                                 // If player fold they are out of the game
-                                                if(info.players.get(i).isFolded()){
-                                                    continue;
-                                                }
+//                                                if(info.players.get(i).isFolded()){
+//                                                    continue;
+//                                                }
                                                 value = tableCards.getBestHand(new int[]{info.players.get(i).getCard1(),info.players.get(i).getCard2() });
-                                                if(value[0] >= bestHand){
+                                                if(value[0] >= bestHand && !info.players.get(i).isFolded()){
                                                     // NEED TO DOUBLE CHECK DRAWS
                                                     if(value[0] > bestHand || value[1] > bestCard){
                                                         bestPlayer = i;
@@ -207,6 +217,35 @@ public class MultiPlayerGame extends AppCompatActivity {
                                                         bestCard = value[1];
                                                     }
                                                 }
+                                                if(value[0] >= bestPlayedHand){
+                                                    // NEED TO DOUBLE CHECK DRAWS
+                                                    if(value[0] > bestPlayedHand || value[1] > bestPlayedCard){
+                                                        bestPlayedPlayer = i;
+                                                        bestPlayedHand = value[0];
+                                                        bestPlayedCard = value[1];
+                                                    }
+                                                }
+                                            }
+
+                                            for(int i = 0; i<players.length; i++){
+                                                final int bp = bestPlayer;
+                                                final int bpp = bestPlayedPlayer;
+                                                final int cp = i;
+                                                FirebaseManager.getStatistics(info.getPlayers().get(i).getEmail(), statistics -> {
+                                                    if(statistics == null){
+                                                        statistics = new Statistics();
+                                                        statistics.setEmail(info.getPlayers().get(cp).getEmail());
+                                                    }
+                                                    if(bp == cp){
+                                                        statistics.setTimesWon(statistics.getTimesWon() + 1);
+                                                    }else{
+                                                        statistics.setTimesLost(statistics.getTimesLost() + 1);
+                                                        if(info.getPlayers().get(cp).isFolded() && bpp == cp ){
+                                                            statistics.setTimesShouldHaveWon(statistics.getTimesShouldHaveWon() + 1);
+                                                        }
+                                                    }
+                                                    FirebaseManager.setStatistics(statistics);
+                                                });
                                             }
                                             // Giving winning player chips
                                             info.players.get(bestPlayer).addChipValue(info.pot);
@@ -358,22 +397,22 @@ public class MultiPlayerGame extends AppCompatActivity {
         playerMarkers[2] = findViewById(R.id.player_marker_2);
         playerMarkers[3] = findViewById(R.id.player_marker_3);
 
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         gameID = getIntent().getIntExtra("gameID",-1);
         FirebaseManager.getGameInfo(gameID, new GameInfo.IGameReceiver() {
             @Override
             public void receiveGame(GameInfo game) {
-                String displayName = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
+                String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
                 SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
-                displayName = pref.getString("Username", displayName);
+                String displayName = pref.getString("Username", email);
                 if(game == null){
                     GameInfo gi = new GameInfo();
                     gi.setGameID(gameID);
                     gi.setPot(0);
 
                     List<Player> players = new ArrayList<>();
-                    players.add(new Player(500, displayName));
+                    players.add(new Player(500, displayName, email));
                     gi.setPlayers(players);
                     gi.setCurrentPlayer(-1);
                     FirebaseManager.setGameInfo(gi);
@@ -383,7 +422,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 }
                 List<Player> players = game.getPlayers();
                 for(int i=0; i< players.size(); i++){
-                    if(players.get(i).getUsername().equals(displayName)){
+                    if(players.get(i).getEmail().equals(email)){
                         thisPlayer = i;
                         playerMarkers[i].setVisibility(View.VISIBLE);
                         return;
@@ -395,7 +434,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 }
                 thisPlayer = players.size();
                 playerMarkers[thisPlayer].setVisibility(View.VISIBLE);
-                players.add(new Player(500, displayName));
+                players.add(new Player(500, displayName, email));
                 game.setPlayers(players);
                 if(players.size() > 3){
                     game.setCurrentPlayer(3);
@@ -493,10 +532,22 @@ public class MultiPlayerGame extends AppCompatActivity {
                 pot.addChips(raiseValue);
                 info.setPot(pot.getChipValue());
                 playerPotValue[0] += raiseValue;
+                final int raiseV = raiseValue;
                 info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
                 info.actingPlayer = thisPlayer;
                 info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
+                FirebaseManager.getStatistics(info.getPlayers().get(thisPlayer).getEmail(), statistics -> {
+                    if(statistics == null){
+                        statistics = new Statistics();
+                        statistics.setEmail(info.getPlayers().get(thisPlayer).getEmail());
+                    }
+                    int cardOneValue = statistics.getCardRaiseValue().get(info.players.get(thisPlayer).getCard1());
+                    int cardTwoValue = statistics.getCardRaiseValue().get(info.players.get(thisPlayer).getCard2());
+                    statistics.getCardRaiseValue().set(info.players.get(thisPlayer).getCard1(), cardOneValue + raiseV);
+                    statistics.getCardRaiseValue().set(info.players.get(thisPlayer).getCard2(), cardTwoValue + raiseV);
+                    FirebaseManager.setStatistics(statistics);
+                });
                 playerActed = true;
                 raiseButton.setVisibility(View.GONE);
                 callButton.setVisibility(View.GONE);
@@ -519,6 +570,14 @@ public class MultiPlayerGame extends AppCompatActivity {
             raiseButton.setVisibility(View.GONE);
             callButton.setVisibility(View.GONE);
             foldButton.setVisibility(View.GONE);
+            FirebaseManager.getStatistics(info.getPlayers().get(thisPlayer).getEmail(), statistics -> {
+                if(statistics == null){
+                    statistics = new Statistics();
+                    statistics.setEmail(info.getPlayers().get(thisPlayer).getEmail());
+                }
+                statistics.setTimesFolded(statistics.getTimesFolded() + 1);
+                FirebaseManager.setStatistics(statistics);
+            });
             mainHandler.postDelayed(mMainLoop, 1000);
         });
 
@@ -539,9 +598,21 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.players.get(thisPlayer).setChipValue(info.players.get(thisPlayer).getChipValue() - (highest - current));
                 info.players.get(thisPlayer).setRaiseValue(highest);
                 pot.addChips(highest - current);
+                final int raiseV = highest - current;
                 info.setPot(pot.getChipValue());
                 info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
+                FirebaseManager.getStatistics(info.getPlayers().get(thisPlayer).getEmail(), statistics -> {
+                    if(statistics == null){
+                        statistics = new Statistics();
+                        statistics.setEmail(info.getPlayers().get(thisPlayer).getEmail());
+                    }
+                    int cardOneValue = statistics.getCardRaiseValue().get(info.players.get(thisPlayer).getCard1());
+                    int cardTwoValue = statistics.getCardRaiseValue().get(info.players.get(thisPlayer).getCard2());
+                    statistics.getCardRaiseValue().set(info.players.get(thisPlayer).getCard1(), cardOneValue + raiseV);
+                    statistics.getCardRaiseValue().set(info.players.get(thisPlayer).getCard2(), cardTwoValue + raiseV);
+                    FirebaseManager.setStatistics(statistics);
+                });
                 playerActed = true;
                 raiseButton.setVisibility(View.GONE);
                 callButton.setVisibility(View.GONE);

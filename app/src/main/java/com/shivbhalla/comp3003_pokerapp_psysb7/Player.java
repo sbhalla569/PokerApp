@@ -2,6 +2,7 @@ package com.shivbhalla.comp3003_pokerapp_psysb7;
 
 public class Player {
     private String username;
+    private String email;
     private int card1;
     private int card2;
     private int chipValue;
@@ -15,15 +16,25 @@ public class Player {
         raiseValue = 0;
         folded = false;
         username = "";
+        email = "";
     }
 
-    public Player(int chipValue, String username) {
+    public Player(int chipValue, String username, String email) {
         this.chipValue = chipValue;
         card1 = 0;
         card2 = 0;
         raiseValue = 0;
         folded = false;
         this.username = username;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getRaiseValue() {

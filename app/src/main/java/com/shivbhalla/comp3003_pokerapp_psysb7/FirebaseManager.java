@@ -105,4 +105,42 @@ public class FirebaseManager {
         );
 
     }
+
+    public static void getStatistics(String email, Statistics.IStatReceiver onComplete){
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("stats").whereEqualTo("email", email).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<Statistics> stats = queryDocumentSnapshots.toObjects(Statistics.class);
+                if(onComplete != null){
+                    if(stats.size() < 1){
+                        onComplete.onReceive(null);
+                        return;
+                    }
+                    onComplete.onReceive(stats.get(0));
+                }
+            }
+        }).addOnFailureListener(e -> {
+            if(onComplete != null){
+                onComplete.onReceive(null);
+            }
+        });
+    }
+
+    public static void setStatistics(Statistics info){
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("stats").whereEqualTo("email", info.getEmail()).get().addOnSuccessListener(
+                queryDocumentSnapshots -> {
+                    if(queryDocumentSnapshots.getDocuments().size() > 0){
+                        db.collection("stats").document(queryDocumentSnapshots.getDocuments().get(0).getId())
+                                .set(info);
+                        return;
+                    }
+                    db.collection("stats").add(info);
+                }
+        );
+
+    }
 }
