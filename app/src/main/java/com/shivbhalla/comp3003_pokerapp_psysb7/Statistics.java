@@ -13,8 +13,6 @@ public class Statistics {
     private int timesWon;
     private int timesLost;
     private int timesShouldHaveWon;
-    private List<Integer> favouriteCard;
-    private List<Integer> cardFrequency;
     private List<Integer> cardRaiseValue;
     private String email;
 
@@ -24,12 +22,8 @@ public class Statistics {
         timesLost = 0;
         timesShouldHaveWon = 0;
         email = "";
-        favouriteCard = new ArrayList<>(52);
-        cardFrequency = new ArrayList<>(52);
         cardRaiseValue = new ArrayList<>(52);
         for(int i = 0; i<52; i++){
-            favouriteCard.add(0);
-            cardFrequency.add(0);
             cardRaiseValue.add(0);
         }
     }
@@ -72,22 +66,6 @@ public class Statistics {
 
     public void setTimesShouldHaveWon(int timesShouldHaveWon) {
         this.timesShouldHaveWon = timesShouldHaveWon;
-    }
-
-    public List<Integer> getFavouriteCard() {
-        return favouriteCard;
-    }
-
-    public void setFavouriteCard(List<Integer> favouriteCard) {
-        this.favouriteCard = favouriteCard;
-    }
-
-    public List<Integer> getCardFrequency() {
-        return cardFrequency;
-    }
-
-    public void setCardFrequency(List<Integer> cardFrequency) {
-        this.cardFrequency = cardFrequency;
     }
 
     public List<Integer> getCardRaiseValue() {

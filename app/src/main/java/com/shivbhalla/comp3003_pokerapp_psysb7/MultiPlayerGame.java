@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMultiPlayerGameBinding;
@@ -77,6 +79,9 @@ public class MultiPlayerGame extends AppCompatActivity {
     private GameInfo info;
     private int highest;
     private FirebaseAuth auth;
+    private String displayName;
+    private RecyclerView recyclerView;
+    private ChatAdapter chatAdapter;
 
     
     private int getCurrentRaiseValue(){
@@ -109,9 +114,12 @@ public class MultiPlayerGame extends AppCompatActivity {
                             }
                             return;
                         }
-                        String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
-                        SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
-                        String displayName = pref.getString("Username", email);
+                        if(auth.getCurrentUser() != null){
+                            String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
+                            SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
+                            displayName = pref.getString("Username", email);
+                        }
+                        int foldCount = 0;
                         for(int i=0; i<4; i++){
                             players[i].setChipValue(0);
                             dealerChips[i].setVisibility(game.currentPlayer == i ? View.VISIBLE:View.INVISIBLE);
@@ -126,9 +134,13 @@ public class MultiPlayerGame extends AppCompatActivity {
                                     players[i].showHand();
                                 }else if(game.players.get(i).isFolded()){
                                     players[i].fold();
+                                    foldCount++;
                                 }
                             }
                         }
+                        chatAdapter.setData(game);
+                        // Add section to type message
+                        // Make button send message
                         tableCards.reset();
                         for(int i=0;i<5;i++){
                             if(game.table.get(i) >= 0){
@@ -158,7 +170,8 @@ public class MultiPlayerGame extends AppCompatActivity {
                                     }
                                 }
                                 raiseBar.setProgress(highest + 5);
-                                if(info.players.get(thisPlayer).getRaiseValue() == highest && info.actingPlayer == thisPlayer && info.lastActed != thisPlayer){
+                                if((info.players.get(thisPlayer).getRaiseValue() == highest && info.actingPlayer == thisPlayer && info.lastActed != thisPlayer) ||
+                                        (!info.players.get(thisPlayer).isFolded() && foldCount == 3)){
                                     switch (info.stage){
                                         case 0:
                                             info.stage = 1;
@@ -264,12 +277,16 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             }
                                             info.players.get(0).setCard1(info.deck.get(0));
                                             info.players.get(0).setCard2(info.deck.get(1));
+                                            info.players.get(0).setFolded(false);
                                             info.players.get(1).setCard1(info.deck.get(2));
                                             info.players.get(1).setCard2(info.deck.get(3));
+                                            info.players.get(1).setFolded(false);
                                             info.players.get(2).setCard1(info.deck.get(4));
                                             info.players.get(2).setCard2(info.deck.get(5));
+                                            info.players.get(2).setFolded(false);
                                             info.players.get(3).setCard1(info.deck.get(6));
                                             info.players.get(3).setCard2(info.deck.get(7));
+                                            info.players.get(3).setFolded(false);
                                             info.deck.remove(0);
                                             info.deck.remove(0);
                                             info.deck.remove(0);
@@ -490,6 +507,10 @@ public class MultiPlayerGame extends AppCompatActivity {
         lose = findViewById(R.id.lose_frame);
         raiseTextValue = findViewById(R.id.raisevalue);
         raiseBar = findViewById(R.id.raiseslider);
+        recyclerView = findViewById(R.id.chat);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        chatAdapter = new ChatAdapter(this);
+        recyclerView.setAdapter(chatAdapter);
 
 
         raiseBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -533,7 +554,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.setPot(pot.getChipValue());
                 playerPotValue[0] += raiseValue;
                 final int raiseV = raiseValue;
-                info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+                goToNextPlayer();
                 info.actingPlayer = thisPlayer;
                 info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
@@ -563,7 +584,7 @@ public class MultiPlayerGame extends AppCompatActivity {
             }
             players[thisPlayer].fold();
             Objects.requireNonNull(info.getPlayers().get(thisPlayer)).setFolded(true);
-            info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+            goToNextPlayer();
             info.lastActed = thisPlayer;
             FirebaseManager.setGameInfo(info);
             playerActed = true;
@@ -587,7 +608,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 return;
             }
             if(!players[thisPlayer].getFolded()){
-                info.setCurrentPlayer((info.getCurrentPlayer() + 1) % info.getPlayers().size());
+                goToNextPlayer();
                 int highest = 0;
                 for(int i = 0; i < 4; i++){
                     if(info.players.get(i).getRaiseValue() > highest){
@@ -633,6 +654,14 @@ public class MultiPlayerGame extends AppCompatActivity {
         }, 200);
 
 
+    }
+
+    private void goToNextPlayer(){
+        int player = (info.getCurrentPlayer() + 1) % info.getPlayers().size();
+        while(info.players.get(player).isFolded()){
+            player = (player + 1) % info.getPlayers().size();
+        }
+        info.setCurrentPlayer(player);
     }
 
     public void addBlinds(GameInfo gameInfo, int playerValue){

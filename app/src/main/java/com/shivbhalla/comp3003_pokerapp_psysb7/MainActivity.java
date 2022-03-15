@@ -130,7 +130,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        displayName.setText(Objects.requireNonNull(auth.getCurrentUser()).getEmail());
+        if(auth.getCurrentUser() == null){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }else {
+            displayName.setText(Objects.requireNonNull(auth.getCurrentUser()).getEmail());
+        }
         if(changeUsername.getText().toString().equals("Player")){
             changeUsername.setText(displayName.getText());
             SharedPreferences.Editor editor = getSharedPreferences("PokerGame", MODE_PRIVATE).edit();
