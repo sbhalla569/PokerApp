@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout linearLayout;
     TextView displayName;
     EditText changeUsername;
+    Button profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         Button playSingle = findViewById(R.id.single_player_button);
         Button playMulti = findViewById(R.id.multi_player_button);
         Button logOut = findViewById(R.id.logout_button);
+        profile = findViewById(R.id.profile_page);
         displayName = findViewById(R.id.display_name);
         changeUsername = findViewById(R.id.change_username);
         SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
@@ -95,6 +97,14 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("ERROR");
                 }
 
+            }
+        });
+
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),ProfileActivity.class);
+                startActivity(intent);
             }
         });
 

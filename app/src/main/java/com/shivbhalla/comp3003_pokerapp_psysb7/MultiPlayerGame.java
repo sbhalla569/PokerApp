@@ -81,7 +81,7 @@ public class MultiPlayerGame extends AppCompatActivity {
     private FirebaseAuth auth;
     private String displayName;
     private RecyclerView recyclerView;
-    private ChatAdapter chatAdapter;
+//    private ChatAdapter chatAdapter;
 
     
     private int getCurrentRaiseValue(){
@@ -138,7 +138,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                 }
                             }
                         }
-                        chatAdapter.setData(game);
+//                        chatAdapter.setData(game);
                         // Add section to type message
                         // Make button send message
                         tableCards.reset();
@@ -507,10 +507,10 @@ public class MultiPlayerGame extends AppCompatActivity {
         lose = findViewById(R.id.lose_frame);
         raiseTextValue = findViewById(R.id.raisevalue);
         raiseBar = findViewById(R.id.raiseslider);
-        recyclerView = findViewById(R.id.chat);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new ChatAdapter(this);
-        recyclerView.setAdapter(chatAdapter);
+//        recyclerView = findViewById(R.id.chat);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        chatAdapter = new ChatAdapter(this);
+//        recyclerView.setAdapter(chatAdapter);
 
 
         raiseBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

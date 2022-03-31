@@ -44,21 +44,21 @@ public class TableCards extends Fragment {
         if(riverCards.length < 3){
             throw new IllegalArgumentException();
         }
-        river1.setImageResource(Cards.getCard(riverCards[0]));
+        if(river1!=null)river1.setImageResource(Cards.getCard(riverCards[0]));
         river1Value = riverCards[0];
-        river2.setImageResource(Cards.getCard(riverCards[1]));
+        if(river2!=null)river2.setImageResource(Cards.getCard(riverCards[1]));
         river2Value = riverCards[1];
-        river3.setImageResource(Cards.getCard(riverCards[2]));
+        if(river3!=null)river3.setImageResource(Cards.getCard(riverCards[2]));
         river3Value = riverCards[2];
     }
 
     public void showFlop(int flopCard){
-        flop.setImageResource(Cards.getCard(flopCard));
+        if(flop!=null)flop.setImageResource(Cards.getCard(flopCard));
         flopValue = flopCard;
     }
 
     public void showTurn(int turn){
-        turnCard.setImageResource(Cards.getCard(turn));
+        if(turnCard!=null)turnCard.setImageResource(Cards.getCard(turn));
         turnValue = turn;
     }
 
@@ -96,10 +96,48 @@ public class TableCards extends Fragment {
         turnCard.setImageResource(R.drawable.card_back);
     }
 
-    public int[] getBestHand(int[] cards){
+    public int[] getBestHand(int[] cards) {
+        System.out.printf("Checking Cards %d %d\n",cards[0],cards[1]);
+        int[][] cardSet = new int[][]{
+                new int[]{cards[0],cards[1],river1Value,river2Value,river3Value},
+                new int[]{cards[0],cards[1],river1Value,river2Value,turnValue},
+        new int[]{cards[0],cards[1],river1Value,river3Value,turnValue},
+        new int[]{cards[0],cards[1],river2Value,river3Value,turnValue},
+        new int[]{cards[0],cards[1],river1Value,river3Value,flopValue},
+        new int[]{cards[0],cards[1],river2Value,river3Value,flopValue},
+        new int[]{cards[0],cards[1],river1Value,flopValue,turnValue},
+        new int[]{cards[0],cards[1],river2Value,flopValue,turnValue},
+        new int[]{cards[0],cards[1],river3Value,flopValue,turnValue},
+        new int[]{cards[0],river1Value,river2Value,river3Value,flopValue},
+        new int[]{cards[0],river1Value,river2Value,river3Value,turnValue},
+        new int[]{cards[0],river1Value,river2Value,turnValue,flopValue},
+        new int[]{cards[0],river1Value,turnValue,river3Value,flopValue},
+        new int[]{cards[0],turnValue,river2Value,river3Value,flopValue},
+        new int[]{cards[1],river1Value,river2Value,river3Value,flopValue},
+        new int[]{cards[1],river1Value,river2Value,river3Value,turnValue},
+        new int[]{cards[1],river1Value,river2Value,turnValue,flopValue},
+        new int[]{cards[1],river1Value,turnValue,river3Value,flopValue},
+        new int[]{cards[1],turnValue,river2Value,river3Value,flopValue}
+        };
+        int[] bestHand = new int[]{-1,0,0};
+        for(int i =0; i<cardSet.length; i++){
+            int[] check = getHandValue(cardSet[i]);
+            System.out.printf("Check Value %d: %d\n",i,check[0]);
+            if(check[0] > bestHand[0]){
+                bestHand = check;
+            }
+            if(check[0] == bestHand[0] && check[1] > bestHand[1]){
+                bestHand = check;
+            }
+        }
+        System.out.printf("Best Hand: %d\n\n",bestHand[0]);
+        return bestHand;
+    }
+
+    private int[] getHandValue(int[] cards){
         int[] value = {0,0,0};
 
-        int[] result = getBestThreeOrBetter(new int[]{cards[0],cards[1],river1Value,river2Value,river3Value,flopValue});
+        int[] result = getBestThreeOrBetter(cards);
         if(result[0] > 0){
             value[0] = result[0];
             value[1] = result[1];
@@ -107,9 +145,9 @@ public class TableCards extends Fragment {
         }
 
         // Value[1] = Pair
-        int test = getBestPair(new int[]{cards[0],cards[1],river1Value,river2Value,river3Value,flopValue});
+        int test = getBestPair(cards);
         if(test >= 0){
-            int test2 = getBestPair(new int[]{cards[0],cards[1],river1Value,river2Value,river3Value,flopValue}, test);
+            int test2 = getBestPair(cards, test);
             // Value[2] = Two Pair
             value[0] = test2 >= 0? 2 : 1;
             value[1] = test;
@@ -183,6 +221,10 @@ public class TableCards extends Fragment {
                 handType = value[i];
             }
         }
+//        System.out.printf("Testing Straight: %d\n", handType);
+//        for(int i = 0; i<13; i++){
+//            System.out.printf("Card Value %d: %d\n", i, value[i]);
+//        }
         switch (handType){
             // Four of a kind
             case 4:
@@ -205,15 +247,18 @@ public class TableCards extends Fragment {
                         break;
                     }
                 }
+//                System.out.printf("Testing Straight\n");
                 // Straight
                 boolean straight = false;
                 int start = 0;
                 for(int i = 0; i<10;i++){
-                    if(value[i] < 1){
+                    if(value[i] > 0){
                         int test = 0;
+//                        System.out.printf("Found: %d\n",i);
                         for(int j = 0; j<5; j++){
                             test += value[(i + j)%13];
                         }
+//                        System.out.printf("Found: %d\n",test);
                         if(test == 5){
                             straight = true;
                             start = i;
