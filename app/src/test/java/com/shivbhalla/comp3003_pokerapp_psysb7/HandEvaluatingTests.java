@@ -188,4 +188,100 @@ public class HandEvaluatingTests {
         hand = tableCards.getBestHand(new int[]{26,14});
         assertEquals(6,hand[0]);
     }
+
+    @Test
+    public void FourOfAKind(){
+        TableCards tableCards = new TableCards();
+        tableCards.showRiver(new int[]{2,13,39});
+        tableCards.showFlop(6);
+        tableCards.showTurn(8);
+        int[] hand = tableCards.getBestHand(new int[]{0,26});
+        assertEquals(7,hand[0]);
+        hand = tableCards.getBestHand(new int[]{26,0});
+        assertEquals(7,hand[0]);
+
+        tableCards.showRiver(new int[]{39,13,2});
+        hand = tableCards.getBestHand(new int[]{0,26});
+        assertEquals(7,hand[0]);
+
+        tableCards.showRiver(new int[]{9,13,39});
+        tableCards.showFlop(2);
+        hand = tableCards.getBestHand(new int[]{0,26});
+        assertEquals(7,hand[0]);
+
+        tableCards.showRiver(new int[]{6,13,39});
+        tableCards.showFlop(8);
+        tableCards.showTurn(2);
+        hand = tableCards.getBestHand(new int[]{0,26});
+        assertEquals(7,hand[0]);
+    }
+
+    @Test
+    public void StraightFlush(){
+        TableCards tableCards = new TableCards();
+        tableCards.showRiver(new int[]{2,3,4});
+        tableCards.showFlop(6);
+        tableCards.showTurn(8);
+        int[] hand = tableCards.getBestHand(new int[]{5,26});
+        assertEquals(8,hand[0]);
+
+        hand = tableCards.getBestHand(new int[]{26,5});
+        assertEquals(8,hand[0]);
+
+        tableCards.showRiver(new int[]{3,2,4});
+        hand = tableCards.getBestHand(new int[]{26,5});
+        assertEquals(8,hand[0]);
+        tableCards.showRiver(new int[]{3,4,2});
+        hand = tableCards.getBestHand(new int[]{26,5});
+        assertEquals(8,hand[0]);
+        tableCards.showRiver(new int[]{4,2,3});
+        hand = tableCards.getBestHand(new int[]{26,5});
+        assertEquals(8,hand[0]);
+
+        tableCards.showRiver(new int[]{6,2,4});
+        tableCards.showFlop(3);
+        hand = tableCards.getBestHand(new int[]{26,5});
+        assertEquals(8,hand[0]);
+
+        tableCards.showRiver(new int[]{8,2,4});
+        tableCards.showFlop(6);
+        tableCards.showTurn(3);
+        hand = tableCards.getBestHand(new int[]{26,5});
+        assertEquals(8,hand[0]);
+    }
+
+    @Test
+    public void RoyalFlush(){
+        TableCards tableCards = new TableCards();
+        tableCards.showRiver(new int[]{9,10,11});
+        tableCards.showFlop(0);
+        tableCards.showTurn(8);
+        int[] hand = tableCards.getBestHand(new int[]{12,26});
+        assertEquals(9,hand[0]);
+
+        hand = tableCards.getBestHand(new int[]{26,12});
+        assertEquals(9,hand[0]);
+
+        tableCards.showRiver(new int[]{10,9,11});
+        hand = tableCards.getBestHand(new int[]{26,12});
+        assertEquals(9,hand[0]);
+        tableCards.showRiver(new int[]{11,10,9});
+        hand = tableCards.getBestHand(new int[]{26,12});
+        assertEquals(9,hand[0]);
+        tableCards.showRiver(new int[]{10,11,9});
+        hand = tableCards.getBestHand(new int[]{26,12});
+        assertEquals(9,hand[0]);
+
+        tableCards.showRiver(new int[]{0,10,11});
+        tableCards.showFlop(9);
+        hand = tableCards.getBestHand(new int[]{26,12});
+        assertEquals(9,hand[0]);
+
+        tableCards.showRiver(new int[]{8,10,11});
+        tableCards.showFlop(0);
+        tableCards.showTurn(9);
+        hand = tableCards.getBestHand(new int[]{26,12});
+        assertEquals(9,hand[0]);
+    }
+
 }

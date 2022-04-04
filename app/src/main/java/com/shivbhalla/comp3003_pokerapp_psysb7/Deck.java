@@ -51,4 +51,8 @@ public class Deck {
         flop[2] = drawCard();
         return flop;
     }
+
+    public int getCard(int index){
+        return cards[index];
+    }
 }
