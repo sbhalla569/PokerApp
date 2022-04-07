@@ -573,6 +573,8 @@ public class MultiPlayerGame extends AppCompatActivity {
                 raiseButton.setVisibility(View.GONE);
                 callButton.setVisibility(View.GONE);
                 foldButton.setVisibility(View.GONE);
+                raiseBar.setVisibility(View.GONE);
+                raiseTextValue.setVisibility(View.GONE);
                 mainHandler.postDelayed(mMainLoop, 1000);
             }
         });
@@ -591,6 +593,8 @@ public class MultiPlayerGame extends AppCompatActivity {
             raiseButton.setVisibility(View.GONE);
             callButton.setVisibility(View.GONE);
             foldButton.setVisibility(View.GONE);
+            raiseBar.setVisibility(View.GONE);
+            raiseTextValue.setVisibility(View.GONE);
             FirebaseManager.getStatistics(info.getPlayers().get(thisPlayer).getEmail(), statistics -> {
                 if(statistics == null){
                     statistics = new Statistics();
@@ -638,12 +642,16 @@ public class MultiPlayerGame extends AppCompatActivity {
                 raiseButton.setVisibility(View.GONE);
                 callButton.setVisibility(View.GONE);
                 foldButton.setVisibility(View.GONE);
+                raiseBar.setVisibility(View.GONE);
+                raiseTextValue.setVisibility(View.GONE);
                 mainHandler.postDelayed(mMainLoop, 1000);
             }
         });
         raiseButton.setVisibility(View.GONE);
         callButton.setVisibility(View.GONE);
         foldButton.setVisibility(View.GONE);
+        raiseBar.setVisibility(View.GONE);
+        raiseTextValue.setVisibility(View.GONE);
 
         deck = new Deck();
         mainHandler.postDelayed(new Runnable() {

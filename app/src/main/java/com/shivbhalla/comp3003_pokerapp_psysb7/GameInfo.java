@@ -12,27 +12,6 @@ public class GameInfo {
         void receiveList(GameInfo[] list);
     }
 
-    public static class Message{
-        int player;
-        String message;
-
-        public int getPlayer() {
-            return player;
-        }
-
-        public void setPlayer(int player) {
-            this.player = player;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-    }
-
     int actingPlayer;
     List<Integer> deck;
     int gameID;
@@ -44,7 +23,6 @@ public class GameInfo {
     int gameState;
     int lastActed;
     int dealer;
-    List<Message> chat;
 
     public GameInfo(){
         actingPlayer = 0;
@@ -53,7 +31,6 @@ public class GameInfo {
         deck = new ArrayList<>();
         table = new ArrayList<>();
         players = new ArrayList<>();
-        chat = new ArrayList<>();
         pot = 0;
         currentPlayer = 0;
         gameState = 0;
@@ -65,14 +42,6 @@ public class GameInfo {
         table.add(-1);
         table.add(-1);
         table.add(-1);
-    }
-
-    public List<Message> getChat() {
-        return chat;
-    }
-
-    public void setChat(List<Message> chat) {
-        this.chat = chat;
     }
 
     public int getDealer() {
