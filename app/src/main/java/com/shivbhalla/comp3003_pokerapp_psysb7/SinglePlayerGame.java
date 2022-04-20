@@ -12,8 +12,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMultiPlayerGameBinding;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -63,6 +69,15 @@ public class SinglePlayerGame extends AppCompatActivity {
     private int[] roundPotValue = new int[4];
     private FrameLayout win;
     private FrameLayout lose;
+    private static final List<String> botNames = new ArrayList<String>(){{
+        add("Bob");
+        add("Mary");
+        add("Jim");
+        add("Henry");
+        add("Sophie");
+        add("Milena");
+        add("Harry");
+    }};
 
 
     private int getCurrentRaiseValue(){
@@ -328,13 +343,13 @@ public class SinglePlayerGame extends AppCompatActivity {
             return false;
         }
     };
-    private ActivitySinglerPlayerGameBinding binding;
+    private ActivityMultiPlayerGameBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivitySinglerPlayerGameBinding.inflate(getLayoutInflater());
+        binding = ActivityMultiPlayerGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         mVisible = true;
@@ -401,6 +416,11 @@ public class SinglePlayerGame extends AppCompatActivity {
                     }
                 }
                 players[0].showHand();
+                Random rand = new Random();
+                players[0].setDisplayName("Player");
+                players[1].setDisplayName(botNames.get(rand.nextInt(7)));
+                players[2].setDisplayName(botNames.get(rand.nextInt(7)));
+                players[3].setDisplayName(botNames.get(rand.nextInt(7)));
                 setCurrentDealer(0);
                 assert pot != null;
                 addBlinds();

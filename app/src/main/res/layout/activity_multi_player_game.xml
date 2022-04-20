@@ -21,10 +21,10 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/table_description"
         android:foregroundGravity="center"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:translationY="55dp"
-        app:srcCompat="@drawable/table" />
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:translationY="0dp"
+        app:srcCompat="@drawable/pokerscene" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout2"
@@ -33,9 +33,9 @@
         android:fitsSystemWindows="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="300dp"
-            android:layout_height="110dp"
-            android:background="#4CAF50"
+            android:layout_width="294dp"
+            android:layout_height="99dp"
+            android:background="#3C3837"
             android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -48,7 +48,7 @@
                 android:text="Fold"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:backgroundTint="@android:color/holo_red_light"
+                app:backgroundTint="#213922"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/call_button"
@@ -62,7 +62,7 @@
                 android:text="Call"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:backgroundTint="@android:color/holo_red_light"
+                app:backgroundTint="#213922"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fold_button"
                 app:layout_constraintStart_toEndOf="@+id/raise_button"
@@ -78,7 +78,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:backgroundTint="@android:color/holo_red_light"
+                app:backgroundTint="#213922"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/call_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
                 android:id="@+id/raiseslider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/green"
+                android:background="#3C3837"
                 android:max="100"
                 android:progress="1"
                 app:layout_constraintBottom_toTopOf="@+id/call_button"
@@ -114,6 +114,7 @@
             android:name="com.shivbhalla.comp3003_pokerapp_psysb7.playerFragment"
             android:layout_width="90dp"
             android:layout_height="130dp"
+            android:layout_marginStart="75dp"
             android:translationY="-20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -149,6 +150,7 @@
             android:name="com.shivbhalla.comp3003_pokerapp_psysb7.playerFragment"
             android:layout_width="90dp"
             android:layout_height="130dp"
+            android:layout_marginEnd="75dp"
             android:translationX="-25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

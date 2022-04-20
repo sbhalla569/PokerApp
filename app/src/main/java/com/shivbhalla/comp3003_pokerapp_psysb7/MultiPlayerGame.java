@@ -122,7 +122,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                         int foldCount = 0;
                         for(int i=0; i<4; i++){
                             players[i].setChipValue(0);
-                            dealerChips[i].setVisibility(game.currentPlayer == i ? View.VISIBLE:View.INVISIBLE);
+                            dealerChips[i].setVisibility(game.dealer == i ? View.VISIBLE:View.INVISIBLE);
                             if(thisPlayer == i){
                                 game.players.get(i).setUsername(displayName);
                             }
@@ -231,7 +231,6 @@ public class MultiPlayerGame extends AppCompatActivity {
                                                     }
                                                 }
                                                 if(value[0] >= bestPlayedHand){
-                                                    // NEED TO DOUBLE CHECK DRAWS
                                                     if(value[0] > bestPlayedHand || value[1] > bestPlayedCard){
                                                         bestPlayedPlayer = i;
                                                         bestPlayedHand = value[0];
