@@ -132,7 +132,8 @@
             android:layout_height="30dp"
             android:src="@drawable/chip_1000"
             app:layout_constraintStart_toEndOf="@+id/player_1"
-            app:layout_constraintTop_toTopOf="@+id/player_1" />
+            app:layout_constraintTop_toTopOf="@+id/player_1"
+            app:srcCompat="@drawable/dealer" />
 
         <ImageView
             android:id="@+id/dealer_1"
@@ -140,7 +141,8 @@
             android:layout_height="30dp"
             android:src="@drawable/chip_1000"
             app:layout_constraintStart_toEndOf="@+id/player_2"
-            app:layout_constraintTop_toTopOf="@+id/player_2" />
+            app:layout_constraintTop_toTopOf="@+id/player_2"
+            app:srcCompat="@drawable/dealer" />
 
         <ImageView
             android:id="@+id/dealer_2"
@@ -148,7 +150,8 @@
             android:layout_height="30dp"
             android:src="@drawable/chip_1000"
             app:layout_constraintBottom_toBottomOf="@+id/player_3"
-            app:layout_constraintStart_toEndOf="@+id/player_3" />
+            app:layout_constraintStart_toEndOf="@+id/player_3"
+            app:srcCompat="@drawable/dealer" />
 
         <ImageView
             android:id="@+id/dealer_3"
@@ -156,7 +159,8 @@
             android:layout_height="30dp"
             android:src="@drawable/chip_1000"
             app:layout_constraintEnd_toStartOf="@+id/player_4"
-            app:layout_constraintTop_toTopOf="@+id/player_4" />
+            app:layout_constraintTop_toTopOf="@+id/player_4"
+            app:srcCompat="@drawable/dealer" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

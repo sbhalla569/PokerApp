@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.material.slider.Slider;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivityMultiPlayerGameBinding;
 import com.shivbhalla.comp3003_pokerapp_psysb7.databinding.ActivitySinglerPlayerGameBinding;
 
@@ -57,6 +59,7 @@ public class SinglePlayerGame extends AppCompatActivity {
     private Button callButton;
     private Button foldButton;
     private Button raiseButton;
+    private SeekBar raiseBar;
     // Counts how many times looped
     private int runCounter = 0;
     // Who is allowed to make actions
@@ -376,6 +379,8 @@ public class SinglePlayerGame extends AppCompatActivity {
         raiseButton = findViewById(R.id.raise_button);
         win = findViewById(R.id.win_frame);
         lose = findViewById(R.id.lose_frame);
+        raiseBar = findViewById(R.id.raiseslider);
+        raiseBar.setVisibility(View.INVISIBLE);
 
         raiseButton.setOnClickListener(View -> {
             if(players[0].getChipValue() >= 50 && !players[0].getFolded() && !playerActed){

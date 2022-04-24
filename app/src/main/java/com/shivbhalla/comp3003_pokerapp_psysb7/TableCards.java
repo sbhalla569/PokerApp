@@ -34,8 +34,6 @@ public class TableCards extends Fragment {
 
     public double getWinChance(int[] cards, int cardsLeft){
         int[] hand = getBestHand(cards);
-        // 0.1923 = 1/5.2 for the card you need
-        // 96% chance of win at start
         double winChance = (0.1923 * cardsLeft) + (hand[0]/9);
         return winChance;
     }
@@ -97,7 +95,6 @@ public class TableCards extends Fragment {
     }
 
     public int[] getBestHand(int[] cards) {
-        System.out.printf("Checking Cards %d %d\n",cards[0],cards[1]);
         int[][] cardSet = new int[][]{
                 new int[]{cards[0],cards[1],river1Value,river2Value,river3Value},
                 new int[]{cards[0],cards[1],river1Value,river2Value,turnValue},
@@ -122,7 +119,6 @@ public class TableCards extends Fragment {
         int[] bestHand = new int[]{-1,0,0};
         for(int i =0; i<cardSet.length; i++){
             int[] check = getHandValue(cardSet[i]);
-            System.out.printf("Check Value %d: %d\n",i,check[0]);
             if(check[0] > bestHand[0]){
                 bestHand = check;
             }
@@ -130,7 +126,6 @@ public class TableCards extends Fragment {
                 bestHand = check;
             }
         }
-        System.out.printf("Best Hand: %d\n\n",bestHand[0]);
         return bestHand;
     }
 
@@ -144,11 +139,9 @@ public class TableCards extends Fragment {
             return value;
         }
 
-        // Value[1] = Pair
         int test = getBestPair(cards);
         if(test >= 0){
             int test2 = getBestPair(cards, test);
-            // Value[2] = Two Pair
             value[0] = test2 >= 0? 2 : 1;
             value[1] = test;
             value[2] = test2;
@@ -157,7 +150,6 @@ public class TableCards extends Fragment {
             }
             return value;
         }
-        // Value[0] = High Card
         int card1 = Cards.cardValue(cards[0]);
         int card2 = Cards.cardValue(cards[1]);
         value[1] = Math.max(card1,card2);
@@ -165,19 +157,6 @@ public class TableCards extends Fragment {
         if(card1 == 0 || card2 == 0){
             value[1] = 13;
         }
-        // Value[3] = Three of a kind
-
-        // Value[4] = Straight
-
-        // Value[5] = Flush
-
-        // Value[6] = Full House
-
-        // Value[7] = Four of a Kind
-
-        // Value[8] = Straight Flush
-
-        // Value[9] = Royal Flush
         return value;
     }
 
@@ -221,10 +200,7 @@ public class TableCards extends Fragment {
                 handType = value[i];
             }
         }
-//        System.out.printf("Testing Straight: %d\n", handType);
-//        for(int i = 0; i<13; i++){
-//            System.out.printf("Card Value %d: %d\n", i, value[i]);
-//        }
+
         switch (handType){
             // Four of a kind
             case 4:

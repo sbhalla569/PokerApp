@@ -15,6 +15,8 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:text="Lobby"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,6 +29,8 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:text="0/4"
+        android:textColor="@color/white"
+        android:textColorHint="@android:color/white"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +42,9 @@
         android:id="@+id/join_button"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:background="@drawable/chip_1"
         android:text="Join"
+        app:backgroundTint="#292424"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
