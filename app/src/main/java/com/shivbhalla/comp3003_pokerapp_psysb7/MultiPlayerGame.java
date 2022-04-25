@@ -54,24 +54,15 @@ public class MultiPlayerGame extends AppCompatActivity {
     private final Handler mainHandler = new Handler();
     private View mContentView;
     private Deck deck;
-    private int state = 0; // 0 = pre flop; 1 = flop; 2 = river; 3 = show cards
-    private boolean moveForward = false;
     private boolean playerActed = false;
     private Button callButton;
     private Button foldButton;
     private Button raiseButton;
     private TextView raiseTextValue;
     private SeekBar raiseBar;
-    // Counts how many times looped
-    private int runCounter = 0;
-    // Who is allowed to make actions
-    private int currentAction = 0;
-    private int currentDealer = 0;
     private ImageView[] dealerChips;
     // Keeps track of how much goes into the pot
     private int[] playerPotValue = new int[4];
-    // How much each player puts in at the current stage
-    private int[] roundPotValue = new int[4];
     private FrameLayout win;
     private FrameLayout lose;
     private int gameID;
@@ -80,19 +71,8 @@ public class MultiPlayerGame extends AppCompatActivity {
     private int highest;
     private FirebaseAuth auth;
     private String displayName;
-    private RecyclerView recyclerView;
-//    private ChatAdapter chatAdapter;
 
-    
-    private int getCurrentRaiseValue(){
-        int maxValue = 0;
-        for(int value : playerPotValue){
-            if(value > maxValue){
-                maxValue = value;
-            }
-        }
-        return maxValue;
-    }
+
 
     // Main update loop of game
     private final Runnable mMainLoop = new Runnable() {
@@ -107,6 +87,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                     if(game != null && game.gameState > 0){
                         List<Player> playerList = game.getPlayers();
                         if(game.gameState == 2){
+                            // Setting users to win or lose depending on the outcome
                             if(playerList.get(thisPlayer).getChipValue() > 0){
                                 win.setVisibility(View.VISIBLE);
                             }else{
@@ -120,6 +101,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                             displayName = pref.getString("Username", email);
                         }
                         int foldCount = 0;
+                        // Setting players appropriate data
                         for(int i=0; i<4; i++){
                             players[i].setChipValue(0);
                             dealerChips[i].setVisibility(game.dealer == i ? View.VISIBLE:View.INVISIBLE);
@@ -138,9 +120,6 @@ public class MultiPlayerGame extends AppCompatActivity {
                                 }
                             }
                         }
-//                        chatAdapter.setData(game);
-                        // Add section to type message
-                        // Make button send message
                         tableCards.reset();
                         for(int i=0;i<5;i++){
                             if(game.table.get(i) >= 0){
@@ -155,6 +134,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                             if(info.stage == 5){
                                 info.lastActed = -1;
                             }
+                            // Setting buttons visible when players go
                             if(players[thisPlayer].getChipValue() > 0) {
                                 playerActed = false;
                                 raiseButton.setVisibility(View.VISIBLE);
@@ -174,11 +154,13 @@ public class MultiPlayerGame extends AppCompatActivity {
                                         (!info.players.get(thisPlayer).isFolded() && foldCount == 3)){
                                     switch (info.stage){
                                         case 0:
+                                            // Pre Flop
                                             info.stage = 1;
                                             info.lastActed = thisPlayer;
                                             break;
 
                                         case 1:
+                                            // Flop
                                             info.table.set(0,info.deck.get(0));
                                             info.table.set(1,info.deck.get(1));
                                             info.table.set(2,info.deck.get(2));
@@ -193,6 +175,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             break;
 
                                         case 2:
+                                            // Turn
                                             info.table.set(3,info.deck.get(0));
                                             info.deck.remove(0);
                                             info.stage = 3;
@@ -201,6 +184,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             break;
 
                                         case 3:
+                                            // River
                                             info.table.set(4,info.deck.get(0));
                                             info.deck.remove(0);
                                             info.stage = 4;
@@ -209,6 +193,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             break;
 
                                         case 4:
+                                            // Using Hand Evaluation Algorithm to determine best hand and winner
                                             int[] value;
                                             int bestPlayedHand = 0;
                                             int bestPlayedCard = 0;
@@ -217,13 +202,8 @@ public class MultiPlayerGame extends AppCompatActivity {
                                             int bestCard = 0;
                                             int bestPlayer = 0;
                                             for (int i = 0; i <players.length; i++){
-                                                // If player fold they are out of the game
-//                                                if(info.players.get(i).isFolded()){
-//                                                    continue;
-//                                                }
                                                 value = tableCards.getBestHand(new int[]{info.players.get(i).getCard1(),info.players.get(i).getCard2() });
                                                 if(value[0] >= bestHand && !info.players.get(i).isFolded()){
-                                                    // NEED TO DOUBLE CHECK DRAWS
                                                     if(value[0] > bestHand || value[1] > bestCard){
                                                         bestPlayer = i;
                                                         bestHand = value[0];
@@ -239,6 +219,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                                                 }
                                             }
 
+                                            // Statistical analysis
                                             for(int i = 0; i<players.length; i++){
                                                 final int bp = bestPlayer;
                                                 final int bpp = bestPlayedPlayer;
@@ -332,13 +313,6 @@ public class MultiPlayerGame extends AppCompatActivity {
         }
     };
 
-    private void setCurrentDealer(int newDealer){
-        for(int i = 0; i<dealerChips.length; i++){
-            dealerChips[i].setVisibility(i == newDealer? View.VISIBLE:View.INVISIBLE);
-        }
-        currentDealer = newDealer;
-    }
-
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -407,12 +381,14 @@ public class MultiPlayerGame extends AppCompatActivity {
         binding = ActivityMultiPlayerGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Initialising player markers
         final ImageView[] playerMarkers = new ImageView[4];
         playerMarkers[0] = findViewById(R.id.player_marker_0);
         playerMarkers[1] = findViewById(R.id.player_marker_1);
         playerMarkers[2] = findViewById(R.id.player_marker_2);
         playerMarkers[3] = findViewById(R.id.player_marker_3);
 
+        // Firebase initialised
         auth = FirebaseAuth.getInstance();
 
         gameID = getIntent().getIntExtra("gameID",-1);
@@ -423,6 +399,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
                 String displayName = pref.getString("Username", email);
                 if(game == null){
+                    // Setting up game in Firebase
                     GameInfo gi = new GameInfo();
                     gi.setGameID(gameID);
                     gi.setPot(0);
@@ -448,6 +425,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                     finish();
                     return;
                 }
+                // Building the game
                 thisPlayer = players.size();
                 playerMarkers[thisPlayer].setVisibility(View.VISIBLE);
                 players.add(new Player(500, displayName, email));
@@ -485,6 +463,7 @@ public class MultiPlayerGame extends AppCompatActivity {
         for(int i = 0; i<4; i++){
             playerPotValue[i] = 0;
         }
+        // Initialising object in the View
         players = new playerFragment[4];
         players[0] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_1);
         players[1] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_2);
@@ -506,10 +485,6 @@ public class MultiPlayerGame extends AppCompatActivity {
         lose = findViewById(R.id.lose_frame);
         raiseTextValue = findViewById(R.id.raisevalue);
         raiseBar = findViewById(R.id.raiseslider);
-//        recyclerView = findViewById(R.id.chat);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        chatAdapter = new ChatAdapter(this);
-//        recyclerView.setAdapter(chatAdapter);
 
 
         raiseBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -534,14 +509,13 @@ public class MultiPlayerGame extends AppCompatActivity {
 
         raiseBar.setProgress(5);
 
-        // Raise sorted
+        // Raise button
         raiseButton.setOnClickListener(V -> {
             if(playerActed){
                 return;
             }
             if(players[thisPlayer].getChipValue() >= 50 && !players[thisPlayer].getFolded() && !playerActed){
                 int raiseValue = raiseBar.getProgress();
-                // DOUBLE CHECK FOR SAFETY
                 raiseValue += highest - info.players.get(thisPlayer).getRaiseValue();
                 if(info.players.get(thisPlayer).getChipValue() < raiseValue){
                     raiseValue = info.players.get(thisPlayer).getChipValue();
@@ -557,6 +531,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.actingPlayer = thisPlayer;
                 info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
+                // Statistical analysis
                 FirebaseManager.getStatistics(info.getPlayers().get(thisPlayer).getEmail(), statistics -> {
                     if(statistics == null){
                         statistics = new Statistics();
@@ -578,7 +553,7 @@ public class MultiPlayerGame extends AppCompatActivity {
             }
         });
 
-        // Folding sorted
+        // Fold Button
         foldButton.setOnClickListener(V -> {
             if(playerActed){
                 return;
@@ -594,6 +569,7 @@ public class MultiPlayerGame extends AppCompatActivity {
             foldButton.setVisibility(View.GONE);
             raiseBar.setVisibility(View.GONE);
             raiseTextValue.setVisibility(View.GONE);
+            // Statistical analysis
             FirebaseManager.getStatistics(info.getPlayers().get(thisPlayer).getEmail(), statistics -> {
                 if(statistics == null){
                     statistics = new Statistics();
@@ -605,7 +581,7 @@ public class MultiPlayerGame extends AppCompatActivity {
             mainHandler.postDelayed(mMainLoop, 1000);
         });
 
-        // Calling sorted
+        // Call/Check Button
         callButton.setOnClickListener(V -> {
             if(playerActed){
                 return;
@@ -626,6 +602,7 @@ public class MultiPlayerGame extends AppCompatActivity {
                 info.setPot(pot.getChipValue());
                 info.lastActed = thisPlayer;
                 FirebaseManager.setGameInfo(info);
+                // Statistical analysis
                 FirebaseManager.getStatistics(info.getPlayers().get(thisPlayer).getEmail(), statistics -> {
                     if(statistics == null){
                         statistics = new Statistics();
@@ -652,6 +629,7 @@ public class MultiPlayerGame extends AppCompatActivity {
         raiseBar.setVisibility(View.GONE);
         raiseTextValue.setVisibility(View.GONE);
 
+        // Creating Initial Deck
         deck = new Deck();
         mainHandler.postDelayed(new Runnable() {
             @Override
@@ -663,6 +641,7 @@ public class MultiPlayerGame extends AppCompatActivity {
 
     }
 
+    // Function to move to the next player
     private void goToNextPlayer(){
         int player = (info.getCurrentPlayer() + 1) % info.getPlayers().size();
         while(info.players.get(player).isFolded()){
@@ -671,6 +650,7 @@ public class MultiPlayerGame extends AppCompatActivity {
         info.setCurrentPlayer(player);
     }
 
+    // Function to take the blinds from the appropriate players
     public void addBlinds(GameInfo gameInfo, int playerValue){
         int i = 1;
         int smallBlind = (playerValue + i) % players.length;

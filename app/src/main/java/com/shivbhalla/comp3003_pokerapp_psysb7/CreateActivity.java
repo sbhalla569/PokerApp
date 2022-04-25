@@ -26,8 +26,10 @@ public class CreateActivity extends AppCompatActivity {
         password = findViewById(R.id.create_password);
         createAcc = findViewById(R.id.create);
 
+        // Initialising Firebase
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
+        // Creates account when user inputs valid email and password
         createAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

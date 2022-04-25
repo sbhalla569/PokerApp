@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
+        // Initialising and setting Menu objects
         linearLayout = findViewById(R.id.linearLayout);
         Button playSingle = findViewById(R.id.single_player_button);
         Button playMulti = findViewById(R.id.multi_player_button);
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("PokerGame", MODE_PRIVATE);
         changeUsername.setText(pref.getString("Username", "Player"));
 
+        // Edit box for users to change username
         changeUsername.setOnKeyListener((view, i, keyEvent) -> {
             SharedPreferences.Editor editor = getSharedPreferences("PokerGame", MODE_PRIVATE).edit();
             editor.putString("Username", changeUsername.getText().toString());
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
+        // Sends users to SinglePlayer game
         playSingle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        // Sends users to lobby for Multiplayer games
         playMulti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Sends users to statistics board
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Logs users out of the game
         logOut.setOnClickListener(view -> {
             auth.signOut();
             Intent intent = new Intent(this, LoginActivity.class);
@@ -186,32 +191,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        FirebaseUser user = auth.getCurrentUser();
-//        if(user != null){
-//            signInButton.setVisibility(View.GONE);
-//            linearLayout.setVisibility(View.VISIBLE);
-//        }
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        if(account != null){
-//            signInButton.setVisibility(View.GONE);
-//            linearLayout.setVisibility(View.VISIBLE);
-//        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == 1234){
-//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-//            try{
-//                GoogleSignInAccount account = task.getResult(ApiException.class);
-//                if(account != null){
-//                    signInButton.setVisibility(View.GONE);
-//                    linearLayout.setVisibility(View.VISIBLE);
-//                }
-//            }catch (ApiException apiException){
-//                Log.w("Poker", "Sign in result: Failed Code = " + apiException.getStatusCode());
-//            }
-//        }
     }
 }

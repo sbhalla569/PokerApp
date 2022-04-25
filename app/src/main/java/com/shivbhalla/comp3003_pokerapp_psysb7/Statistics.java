@@ -3,6 +3,7 @@ package com.shivbhalla.comp3003_pokerapp_psysb7;
 import java.util.ArrayList;
 import java.util.List;
 
+// Class to initialise Statistics
 public class Statistics {
 
     public static interface IStatReceiver{

@@ -32,12 +32,14 @@ public class TableCards extends Fragment {
         // Required empty public constructor
     }
 
+    // Determining win chance for AI bots
     public double getWinChance(int[] cards, int cardsLeft){
         int[] hand = getBestHand(cards);
         double winChance = (0.1923 * cardsLeft) + (hand[0]/9);
         return winChance;
     }
 
+    // Flips the first three cards
     public void showRiver(int[] riverCards) throws IllegalArgumentException{
         if(riverCards.length < 3){
             throw new IllegalArgumentException();
@@ -50,16 +52,19 @@ public class TableCards extends Fragment {
         river3Value = riverCards[2];
     }
 
+    // Flips the Turn card
     public void showFlop(int flopCard){
         if(flop!=null)flop.setImageResource(Cards.getCard(flopCard));
         flopValue = flopCard;
     }
 
+    // Flips the River card
     public void showTurn(int turn){
         if(turnCard!=null)turnCard.setImageResource(Cards.getCard(turn));
         turnValue = turn;
     }
 
+    // Shows all cards
     public void showCard(int card, int cardID){
         switch(card){
             case 0:
@@ -94,6 +99,7 @@ public class TableCards extends Fragment {
         turnCard.setImageResource(R.drawable.card_back);
     }
 
+    // Determines the best hand by iterating through all options
     public int[] getBestHand(int[] cards) {
         int[][] cardSet = new int[][]{
                 new int[]{cards[0],cards[1],river1Value,river2Value,river3Value},
@@ -129,6 +135,7 @@ public class TableCards extends Fragment {
         return bestHand;
     }
 
+    // Applies the two Hand evaluation function algorithms to the hands
     private int[] getHandValue(int[] cards){
         int[] value = {0,0,0};
 
@@ -185,6 +192,7 @@ public class TableCards extends Fragment {
         return value;
     }
 
+    // Function to find three pair or better hand ranking
     public int[] getBestThreeOrBetter(int[] cards){
         int[] value = new int[13];
         int[] suit = new int[4];

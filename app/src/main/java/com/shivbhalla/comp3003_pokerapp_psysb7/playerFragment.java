@@ -80,10 +80,12 @@ public class playerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    // Function to get the chip value
     public int getChipValue(){
         return chipValue;
     }
 
+    // Function to fold the player
     public void fold(){
         hasFolded = true;
         leftCard.setImageResource(R.drawable.card_back);
@@ -92,6 +94,7 @@ public class playerFragment extends Fragment {
         rightCard.setVisibility(View.INVISIBLE);
     }
 
+    // Function to get true or false if the player has folded
     public boolean getFolded(){
         return hasFolded;
     }
@@ -128,7 +131,7 @@ public class playerFragment extends Fragment {
         leftCard = view.findViewById(R.id.leftCard);
         rightCard = view.findViewById(R.id.rightCard);
 
-        // Creating Chips
+        // Creating and Initialising Chips
         redChips = new ImageView[4];
         pinkChips = new ImageView[4];
         turquoiseChips = new ImageView[3];
@@ -168,6 +171,7 @@ public class playerFragment extends Fragment {
         return view;
     }
 
+    // Function to set users username
     public void setDisplayName(String displayName){
         this.displayName.setText(displayName);
     }
@@ -195,14 +199,17 @@ public class playerFragment extends Fragment {
         }
     }
 
+    // Function to add chips
     public void addChips(int value){
         setChipValue(chipValue + value);
     }
 
+    // Function to remove chips
     public void removeChips(int value){
         setChipValue(chipValue - value);
     }
 
+    // Default values
     public void setChipValue(){
         setChipValue(-1);
     }

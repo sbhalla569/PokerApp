@@ -1,5 +1,6 @@
 package com.shivbhalla.comp3003_pokerapp_psysb7;
 
+// Class to initialise the Player
 public class Player {
     private String username;
     private String email;

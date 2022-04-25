@@ -32,11 +32,13 @@ public class LoginActivity extends AppCompatActivity {
         signIn = findViewById(R.id.login);
         register = findViewById(R.id.register);
 
+        // Initialising Firebase
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         if(auth.getCurrentUser() != null){
             finish();
             return;
         }
+        // Signing in users with valid credentials
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Sends users to the register page
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

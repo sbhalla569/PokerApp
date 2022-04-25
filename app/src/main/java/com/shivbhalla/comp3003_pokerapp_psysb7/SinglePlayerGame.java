@@ -82,7 +82,7 @@ public class SinglePlayerGame extends AppCompatActivity {
         add("Harry");
     }};
 
-
+    // Function to get the raise value of players
     private int getCurrentRaiseValue(){
         int maxValue = 0;
         for(int value : playerPotValue){
@@ -103,6 +103,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                     playersFolded++;
                 }
             }
+            // AI section
             if(playersFolded > 2){
                 moveForward = true;
             }else if(playerActed){
@@ -145,6 +146,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                 moveForward = false;
                 switch (state){
                     case 0:
+                        // Flop
                         state = 1;
                         try {
                             tableCards.showRiver(deck.drawRiver());
@@ -154,34 +156,28 @@ public class SinglePlayerGame extends AppCompatActivity {
                         roundPotValue = new int[players.length];
                         break;
                     case 1:
+                        // Turn
                         state = 2;
                         try {
                             tableCards.showFlop(deck.drawCard());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-//                        // DEBUG
-//                        for(playerFragment player : players){
-//                            player.showHand();
-//                        }
                         roundPotValue = new int[players.length];
                         break;
                     case 2:
+                        // River
                         state = 3;
                         try {
                             tableCards.showTurn(deck.drawCard());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-//                        // DEBUG
-//                        for(playerFragment player : players){
-//                            player.showHand();
-//                        }
                         roundPotValue = new int[players.length];
                         break;
                     case 3:
                         state = 4;
-                        // Determine best hand
+                        // Determine best hand using Hand Evaluation Algorithm
                         int[] value;
                         int bestHand = 0;
                         int bestCard = 0;
@@ -195,7 +191,6 @@ public class SinglePlayerGame extends AppCompatActivity {
                             player.showHand();
                             value = tableCards.getBestHand(player.getCards());
                             if(value[0] >= bestHand){
-                                // NEED TO DOUBLE CHECK DRAWS
                                 if(value[0] > bestHand || value[1] > bestCard){
                                     bestPlayer = i;
                                     bestHand = value[0];
@@ -208,6 +203,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                         pot.setChipValue(0);
                         break;
                     case 4:
+                        // Reset Game
                         state = 0;
                         deck.shuffle();
                         for (int i = 0; i<4; i++){
@@ -239,13 +235,6 @@ public class SinglePlayerGame extends AppCompatActivity {
 
                 }
             }
-//            if (players[0].getFolded()){
-//                runCounter++;
-//                if(runCounter > 50){
-//                    runCounter = 0;
-//                    moveForward = true;
-//                }
-//            }
 
             int playersOut = 0;
             boolean playerWins = true;
@@ -280,6 +269,7 @@ public class SinglePlayerGame extends AppCompatActivity {
         }
     };
 
+    // Setting the appropriate dealer
     private void setCurrentDealer(int newDealer){
         for(int i = 0; i<dealerChips.length; i++){
             dealerChips[i].setVisibility(i == newDealer? View.VISIBLE:View.INVISIBLE);
@@ -360,6 +350,7 @@ public class SinglePlayerGame extends AppCompatActivity {
         for(int i = 0; i<4; i++){
             playerPotValue[i] = 0;
         }
+        // Initialising objects
         players = new playerFragment[4];
         players[0] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_1);
         players[1] = (playerFragment) getSupportFragmentManager().findFragmentById(R.id.player_2);
@@ -382,6 +373,7 @@ public class SinglePlayerGame extends AppCompatActivity {
         raiseBar = findViewById(R.id.raiseslider);
         raiseBar.setVisibility(View.INVISIBLE);
 
+        // Raise button
         raiseButton.setOnClickListener(View -> {
             if(players[0].getChipValue() >= 50 && !players[0].getFolded() && !playerActed){
                 players[0].setChipValue(players[0].getChipValue() - 50);
@@ -390,29 +382,24 @@ public class SinglePlayerGame extends AppCompatActivity {
                 playerActed = true;
             }
         });
-
+        // Fold Button
         foldButton.setOnClickListener(View -> {
             players[0].fold();
             playerActed = true;
         });
+        // Call Button
         callButton.setOnClickListener(View -> {
             if(!players[0].getFolded()){
                 playerActed = true;
             }
         });
 
+        // Initialising deck
         deck = new Deck();
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 for(playerFragment player : players){
-//                    try {
-//                        int[] hand = deck.drawHand();
-//                        player.setCards(hand[0],hand[1]);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    player.showHand();
                     player.setChipValue(700);
                     try {
                         player.setCards(deck.drawCard(),deck.drawCard());
@@ -420,6 +407,7 @@ public class SinglePlayerGame extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                // Setting players and bots names
                 players[0].showHand();
                 Random rand = new Random();
                 players[0].setDisplayName("Player");
@@ -436,6 +424,7 @@ public class SinglePlayerGame extends AppCompatActivity {
 
     }
 
+    // Adding the blinds to pot and removing from player
     public void addBlinds(){
         int smallBlind = (currentDealer + 1) % players.length;
         int bigBlind = (currentDealer + 2) % players.length;

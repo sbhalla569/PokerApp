@@ -53,6 +53,7 @@ public class LobbyActivity extends AppCompatActivity {
         final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(recyclerAdapter);
+        // Displays lobby information
         FirebaseManager.getGameList(list -> {
             if(list != null){
                 String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();

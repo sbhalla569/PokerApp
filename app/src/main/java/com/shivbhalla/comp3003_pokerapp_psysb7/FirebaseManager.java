@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class FirebaseManager {
 
+    // Function to get the game information from the game database
     public static void getGameInfo(int gameID, GameInfo.IGameReceiver onComplete){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -41,6 +42,7 @@ public class FirebaseManager {
         });
     }
 
+    // Function to get the gameID from the database
     public static void getNewGameID(GameInfo.IGameReceiver onComplete){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("games").orderBy("gameID", Query.Direction.DESCENDING).limit(1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -65,6 +67,7 @@ public class FirebaseManager {
         });
     }
 
+    // Function used in the lobby system to set the display data
     public static void getGameList(GameInfo.IGameList onComplete){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("games").whereLessThan("gameState",2).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -90,6 +93,7 @@ public class FirebaseManager {
         });
     }
 
+    // Function to set the game information in the game database
     public static void setGameInfo(GameInfo info){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -106,6 +110,7 @@ public class FirebaseManager {
 
     }
 
+    // Function to get the statistics from the statistics database
     public static void getStatistics(String email, Statistics.IStatReceiver onComplete){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -128,6 +133,7 @@ public class FirebaseManager {
         });
     }
 
+    // Function to set the statistics in the statistics database
     public static void setStatistics(Statistics info){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

@@ -130,7 +130,7 @@ public class Chips extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Creating Chips
+        // Creating and initialising Chips
         redChips = new ImageView[4];
         pinkChips = new ImageView[4];
         turquoiseChips = new ImageView[3];

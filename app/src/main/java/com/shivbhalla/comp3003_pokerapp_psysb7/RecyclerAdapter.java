@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+// Adapter Class for Recycler View
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
 
     private List<GameInfo> data;
@@ -92,6 +93,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         void bind(GameInfo gameInfo){
 
             if(gameInfo != null){
+                // Setting lobby information
                 lobbyName.setText(String.format(Locale.UK, "Lobby: %d", gameInfo.getGameID()));
                 playerCount.setText(String.format(Locale.UK, "%d/4", gameInfo.getPlayers().size()));
                 joinButton.setOnClickListener(new View.OnClickListener() {

@@ -62,6 +62,7 @@ public final class Cards {
             R.drawable.king_d
     };
 
+    // Function to get a specific card
     public static int getCard(int cardID) throws IndexOutOfBoundsException{
         if(cardID < 0 || cardID >= 52){
             throw new IndexOutOfBoundsException();

@@ -38,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        // Initialising objects
         favCard = findViewById(R.id.favourite_card_number);
         timesFolded = findViewById(R.id.times_folded_number);
         timesLost = findViewById(R.id.times_lost_number);
@@ -46,6 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
+        // Getting statistics from database
         FirebaseManager.getStatistics(email, statistics -> {
             if(statistics == null){
                 statistics = new Statistics();
@@ -60,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
                     largestCard = i;
                 }
             }
+            // Setting appropriate stats for display
             favCard.setText(card[Cards.cardValue(largestCard)] + " " +"of"+ " " + suits[Cards.cardSuit(largestCard)]);
             timesWon.setText(Integer.toString(statistics.getTimesWon()));
             timesLost.setText(Integer.toString(statistics.getTimesLost()));

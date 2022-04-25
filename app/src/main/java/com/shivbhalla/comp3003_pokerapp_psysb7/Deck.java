@@ -52,6 +52,7 @@ public class Deck {
         return flop;
     }
 
+    // Function to get specific card
     public int getCard(int index){
         return cards[index];
     }
